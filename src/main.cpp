@@ -43,6 +43,27 @@ int main() {
     }
     
   }
+   else if(command == "type" || command == "type:")
+  {
+    if(!argument.empty() && argument[0] == ' '){
+    argument.erase(argument.begin());
+    }
+
+    if(commands.count(argument))
+    {
+      std::cout<<argument<<" "<<commands[argument]<<std::endl;
+    }
+    else
+    {
+      std::cout<<argument<<": not found\n";
+    }
+     
+
+
+
+
+
+  }
   else{
   std::cout << command+": command not found\n";
   }
