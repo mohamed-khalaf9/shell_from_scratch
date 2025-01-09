@@ -11,16 +11,22 @@ int main() {
   
   // Uncomment this block to pass the first stage
   std::string input;
-  std::stringstream ss(input);
+
+
   while(true){
   std::cout << "$ ";
   std::getline(std::cin,input);
+  std::stringstream ss(input);
 
   std::string command;
   int argument;
   ss >> command >> argument;
-  
-  std::getline(std::cin,input);
+
+  if(command == "exit")
+  {
+    exit(argument);
+  }
+
   std::cout << command+": command not found\n";
 
 
