@@ -26,6 +26,10 @@ int main() {
   {
     exit(stoi(argument));
   }
+  else if(command == "echo")
+  {
+    std::cout<<argument<<std::endl;
+  }
 
   std::cout << command+": command not found\n";
 
