@@ -19,12 +19,12 @@ int main() {
   std::stringstream ss(input);
 
   std::string command;
-  int argument;
+  std::string argument;
   ss >> command >> argument;
 
   if(command == "exit")
   {
-    exit(argument);
+    exit(stoi(argument));
   }
 
   std::cout << command+": command not found\n";
