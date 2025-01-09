@@ -28,7 +28,7 @@ int main() {
   {
     exit(stoi(argument));
   }
-  else if(command == "echo")
+  else if(command == "echo" || command == "echo:")
   {
     if(!argument.empty() && argument[0] == ' '){
       argument.erase(argument.begin());
@@ -36,8 +36,9 @@ int main() {
     }
     
   }
-
+  else{
   std::cout << command+": command not found\n";
+  }
 
 
   }
