@@ -20,7 +20,9 @@ int main() {
 
   std::string command;
   std::string argument;
-  ss >> command >> argument;
+  ss >> command;
+
+  std::getline(ss,argument);
 
   if(command == "exit")
   {
