@@ -30,7 +30,11 @@ int main() {
   }
   else if(command == "echo")
   {
-    std::cout<<argument<<std::endl;
+    if(!argument.empty() && argument[0] == ' '){
+      argument.erase(argument.begin());
+      std::cout<<argument<<std::endl;
+    }
+    
   }
 
   std::cout << command+": command not found\n";
