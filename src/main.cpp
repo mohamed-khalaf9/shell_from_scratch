@@ -113,6 +113,23 @@ int main() {
     }
   else{
 
+      // exectue programm 
+    std::string programm_name = command;
+    std::string programm_argument = argument;
+    
+    //check if programm is an executable file 
+    std::string full_path = is_executable_file_exists_in_path(programm_name);
+    if(full_path!="")
+    {
+      std::string command = full_path + " " + programm_name + " " + programm_argument;
+      system(command.c_str());
+
+    }
+    else
+    {
+      std::cout<<programm_name<<": not found\n";
+    }
+
   }
 
 
