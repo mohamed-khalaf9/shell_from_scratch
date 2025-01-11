@@ -55,6 +55,10 @@ int main() {
     }
     else
     {
+      // check if this is an executable file 
+      //1-access path  environment variable
+      const char* path = std::getenv("PATH");
+     
       std::cout<<argument<<": not found\n";
     }
      
