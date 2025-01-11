@@ -8,20 +8,6 @@
 #include <filesystem>
 
 
-std::string is_executable_file_exists_in_path(const std::string& file_name,const std::vector<std::string>& dirs){
-  for(const auto& dir: dirs)
-  {
-    std::string full_path= dir + "/" + file_name;
-    if(std::filesystem::exists(full_path))
-    {
-      return full_path;
-    }
-  }
-  return "";
-
-}
-
-
 std::vector<std::string> split(const std::string& s, char delimiter){
   std::vector<std::string> tokens;
   std::string token;
@@ -34,6 +20,31 @@ std::vector<std::string> split(const std::string& s, char delimiter){
 
   return tokens;
 }
+
+std::string is_executable_file_exists_in_path(const std::string& file_name){
+  const char* path = std::getenv("PATH");
+  if(path){
+
+  std::vector<std::string> dirs = split(path,':');
+
+  for(const auto& dir: dirs)
+  {
+    std::string full_path= dir + "/" + file_name;
+    if(std::filesystem::exists(full_path))
+    {
+      return full_path;
+    }
+  }
+  return "";
+
+  }
+  else
+  return "";
+
+}
+
+
+
 
 int main() {
   // Flush after every std::cout / std:cerr
@@ -85,17 +96,8 @@ int main() {
     }
     else
     {
-      // check if this is an executable file 
-      //1-access path  environment variable
-      const char* path = std::getenv("PATH");
-      if(path)
-      {
-        bool is_found = false; // for checking if the executable file is found or not
-
-        //2- split the path into tokens
-        std::vector<std::string> dirs = split(path,':');
-        //3- search for the executable file in the directories
-        std::string full_path = is_executable_file_exists_in_path(argument,dirs);
+      // check if this is an executable file
+        std::string full_path = is_executable_file_exists_in_path(argument);
         if(full_path!="")
         {
           std::cout<<argument<<" is "<<full_path<<std::endl;
@@ -105,16 +107,12 @@ int main() {
           std::cout<<argument<<": not found\n";
         }
       }
-      else
-      {
-        std::cout<<argument<<": not found\n";
-      }
+    
      
       
     }
-  }
   else{
-  std::cout << command+": command not found\n";
+
   }
 
 
