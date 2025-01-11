@@ -4,6 +4,21 @@
 #include <stdlib.h>
 #include <sstream>
 #include <unordered_map>
+#include <vector>
+
+
+std::vector<std::string> split(const std::string& s, char delimiter){
+  std::vector<std::string> tokens;
+  std::string token;
+  std::stringstream ss(s);
+  
+  while(std::getline(ss,token,delimiter))
+  {
+    tokens.push_back(token);
+  }
+
+  return tokens;
+}
 
 int main() {
   // Flush after every std::cout / std:cerr
@@ -58,6 +73,12 @@ int main() {
       // check if this is an executable file 
       //1-access path  environment variable
       const char* path = std::getenv("PATH");
+      if(path)
+      {
+        //2- split the path into tokens
+        std::vector<std::string> dirs = split(path,':');
+
+      }
      
       std::cout<<argument<<": not found\n";
     }
