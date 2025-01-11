@@ -7,6 +7,21 @@
 #include <vector>
 #include <filesystem>
 
+
+std::string is_executable_file_exists_in_path(const std::string& file_name,const std::vector<std::string>& dirs){
+  for(const auto& dir: dirs)
+  {
+    std::string full_path= dir + "/" + file_name;
+    if(std::filesystem::exists(full_path))
+    {
+      return full_path;
+    }
+  }
+  return "";
+
+}
+
+
 std::vector<std::string> split(const std::string& s, char delimiter){
   std::vector<std::string> tokens;
   std::string token;
@@ -80,26 +95,15 @@ int main() {
         //2- split the path into tokens
         std::vector<std::string> dirs = split(path,':');
         //3- search for the executable file in the directories
-        for(const auto& dir: dirs)
+        std::string full_path = is_executable_file_exists_in_path(argument,dirs);
+        if(full_path!="")
         {
-         
-          std::string full_path = dir + "/" + argument;
-          
-
-          if(std::filesystem::exists(full_path))
-          {
-            std::cout<<argument<<" is "<<full_path<<std::endl;
-            is_found = true;
-            break;
-          }
+          std::cout<<argument<<" is "<<full_path<<std::endl;
         }
-
-        if(!is_found)
+        else
         {
           std::cout<<argument<<": not found\n";
         }
-
-
       }
       else
       {
@@ -108,12 +112,6 @@ int main() {
      
       
     }
-     
-
-
-
-
-
   }
   else{
   std::cout << command+": command not found\n";
