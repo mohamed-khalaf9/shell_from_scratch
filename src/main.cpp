@@ -5,7 +5,7 @@
 #include <sstream>
 #include <unordered_map>
 #include <vector>
-
+#include <filesystem>
 
 std::vector<std::string> split(const std::string& s, char delimiter){
   std::vector<std::string> tokens;
@@ -75,12 +75,38 @@ int main() {
       const char* path = std::getenv("PATH");
       if(path)
       {
+        bool is_found = false; // for checking if the executable file is found or not
+
         //2- split the path into tokens
         std::vector<std::string> dirs = split(path,':');
+        //3- search for the executable file in the directories
+        for(const auto& dir: dirs)
+        {
+         
+          std::string full_path = dir + "/" + argument;
+          
+
+          if(std::filesystem::exists(full_path))
+          {
+            std::cout<<argument<<" is "<<full_path<<std::endl;
+            is_found = true;
+            break;
+          }
+        }
+
+        if(!is_found)
+        {
+          std::cout<<argument<<": not found\n";
+        }
+
 
       }
+      else
+      {
+        std::cout<<argument<<": not found\n";
+      }
      
-      std::cout<<argument<<": not found\n";
+      
     }
      
 
