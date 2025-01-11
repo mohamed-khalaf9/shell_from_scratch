@@ -121,7 +121,8 @@ int main() {
     std::string full_path = is_executable_file_exists_in_path(programm_name);
     if(full_path!="")
     {
-      std::string command = full_path + " " + programm_argument;
+
+      std::string command = programm_name + " " + programm_argument;
       system(command.c_str());
 
     }
