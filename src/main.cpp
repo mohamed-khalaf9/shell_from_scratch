@@ -128,6 +128,14 @@ int main()
       std::cout<<std::filesystem::current_path().string()<<std::endl;
     }
     else if(command=="cd" || command=="cd:"){
+      if(change_directory(argument))
+      {
+        continue;
+      }
+      else
+      {
+        std::cout<<"cd: "<<argument<<": No such file or directory"<<std::endl;
+      }
 
     }
     else
