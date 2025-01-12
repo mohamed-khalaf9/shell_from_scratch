@@ -123,6 +123,14 @@ bool change_directory(const std::string& path){
   else if(path_tokens[0] == "." || path_tokens[0] == "..")
   {
     //handel relative path
+    if(handel_relative_path(path_tokens))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
 
   }  
   else
