@@ -48,6 +48,14 @@ bool is_directory(const std::string& path)
 }
 
 bool change_directory(const std::string& path){
+  if(is_directory(path))
+  {
+    std::filesystem::current_path(path);
+    return true;
+
+  }
+  else
+  return false;
 
 }
 
