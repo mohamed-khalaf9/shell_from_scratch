@@ -132,10 +132,7 @@ int main()
       {
         continue;
       }
-      else
-      {
-        std::cout<<"cd: "<<argument<<": No such file or directory"<<std::endl;
-      }
+      
 
     }
     else
