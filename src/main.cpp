@@ -42,13 +42,13 @@ std::string is_executable_file_exists_in_path(const std::string &file_name)
   else
     return "";
 }
-bool is_directory(const std::string& path)
+bool is_path_exist(const std::string& path)
 {
-  return std::filesystem::is_directory(path);
+  return std::filesystem::exists(path);
 }
 
 bool change_directory(const std::string& path){
-  if(is_directory(path))
+  if(is_path_exist(path))
   {
     std::filesystem::current_path(path);
     return true;
