@@ -58,7 +58,60 @@ bool is_path_exist(const std::string& path)
 {
   return std::filesystem::exists(path);
 }
+std::string remove_last_token_from_working_directory(const std::string &workingDirectory) {
+    std::string updatedDirectory = workingDirectory;  // Make a copy
 
+    // Find the position of the last '/'
+    std::size_t pos = updatedDirectory.find_last_of('/');
+
+    // If '/' is found and it's not the only character (e.g., root '/')
+    if (pos != std::string::npos && pos > 0) {
+        // Erase everything from the last '/' to the end
+        updatedDirectory.erase(pos);
+    } else if (pos == 0) {
+        // If we are at the root '/', set it to "/"
+        updatedDirectory = "/";
+    }
+
+    return updatedDirectory;  // Return the updated directory
+}
+
+bool handel_relative_path(const std::vector<std::string>& path_tokens)
+{
+  for(int i=0; i<path_tokens.size(); i++)
+  {
+    if(path_tokens[i]==".")
+    {
+      int j = i+1;
+      std::string tmp_path = WORKING_DIRECTORY;
+      while(j<path_tokens.size() && (path_tokens[j]!="." || path_tokens[j]!=".."))
+      {
+        tmp_path+="/"+path_tokens[j];
+        if(!is_path_exist(tmp_path)) return false;
+        j++;
+      }
+      WORKING_DIRECTORY = tmp_path; 
+    }
+    else if(path_tokens[i]=="..")
+    {
+      int j = i+1;
+      std::string tmp_path = WORKING_DIRECTORY;
+      tmp_path = remove_last_token_from_working_directory(tmp_path);
+      while(j<path_tokens.size() && (path_tokens[j]!="." || path_tokens[j]!=".."))
+      {
+        tmp_path += "/"+path_tokens[j];
+        if(!is_path_exist(tmp_path)) return false;
+        j++;
+      }
+      WORKING_DIRECTORY = tmp_path; 
+    }
+
+  }
+
+  return true;
+  
+
+}
 bool change_directory(const std::string& path){
   std::string trimmed_path = trim(path);
   std::vector<std::string> path_tokens = split(trimmed_path,'/');
