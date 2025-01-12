@@ -54,6 +54,7 @@ int main()
   commands.emplace("type", "is a shell builtin");
   commands.emplace("echo", "is a shell builtin");
   commands.emplace("exit", "is a shell builtin");
+  commands.emplace("pwd", "is a shell builtin");
 
   // Uncomment this block to pass the first stage
   std::string input;
