@@ -60,8 +60,11 @@ bool is_path_exist(const std::string& path)
 }
 
 bool change_directory(const std::string& path){
-  if(is_path_exist(path))
+  std::string trimmed_path = trim(path);
+
+  if(is_path_exist(trimmed_path))
   {
+
     WORKING_DIRECTORY = path;
     return true;
 
@@ -140,7 +143,8 @@ int main()
       std::cout<<WORKING_DIRECTORY<<std::endl;
     }
     else if(command=="cd" || command=="cd:"){
-      if(change_directory(argument))
+      argument = trim(argument);
+      if(!argument.empty()&&change_directory(argument))
       {
         continue;
       }
