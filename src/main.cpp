@@ -7,6 +7,9 @@
 #include <vector>
 #include <filesystem>
 
+
+std::string WORKING_DIRECTORY = std::filesystem::current_path().string();
+
 std::vector<std::string> split(const std::string &s, char delimiter)
 {
   std::vector<std::string> tokens;
@@ -50,7 +53,7 @@ bool is_path_exist(const std::string& path)
 bool change_directory(const std::string& path){
   if(is_path_exist(path))
   {
-    std::filesystem::current_path(path);
+    WORKING_DIRECTORY = path;
     return true;
 
   }
@@ -125,12 +128,16 @@ int main()
       }
     }
     else if(command=="pwd" || command=="pwd:"){
-      std::cout<<std::filesystem::current_path().string()<<std::endl;
+      std::cout<<WORKING_DIRECTORY<<std::endl;
     }
     else if(command=="cd" || command=="cd:"){
       if(change_directory(argument))
       {
         continue;
+      }
+      else
+      {
+        std::cout<<argument<<": No such file or directory\n";
       }
       
 
