@@ -42,6 +42,14 @@ std::string is_executable_file_exists_in_path(const std::string &file_name)
   else
     return "";
 }
+bool is_directory(const std::string& path)
+{
+  return std::filesystem::is_directory(path);
+}
+
+bool change_directory(const std::string& path){
+
+}
 
 int main()
 {
@@ -110,6 +118,9 @@ int main()
     }
     else if(command=="pwd" || command=="pwd:"){
       std::cout<<std::filesystem::current_path().string()<<std::endl;
+    }
+    else if(command=="cd" || command=="cd:"){
+
     }
     else
     {
