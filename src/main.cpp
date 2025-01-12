@@ -76,42 +76,30 @@ std::string remove_last_token_from_working_directory(const std::string &workingD
     return updatedDirectory;  // Return the updated directory
 }
 
-bool handel_relative_path(const std::vector<std::string>& path_tokens)
-{
-  for(int i=0; i<path_tokens.size(); i++)
-  {
-    if(path_tokens[i]==".")
-    {
-      int j = i+1;
-      std::string tmp_path = WORKING_DIRECTORY;
-      while(j<path_tokens.size() && (path_tokens[j]!="." || path_tokens[j]!=".."))
-      {
-        tmp_path+="/"+path_tokens[j];
-        if(!is_path_exist(tmp_path)) return false;
-        j++;
-      }
-      WORKING_DIRECTORY = tmp_path; 
-    }
-    else if(path_tokens[i]=="..")
-    {
-      int j = i+1;
-      std::string tmp_path = WORKING_DIRECTORY;
-      tmp_path = remove_last_token_from_working_directory(tmp_path);
-      while(j<path_tokens.size() && (path_tokens[j]!="." || path_tokens[j]!=".."))
-      {
-        tmp_path += "/"+path_tokens[j];
-        if(!is_path_exist(tmp_path)) return false;
-        j++;
-      }
-      WORKING_DIRECTORY = tmp_path; 
+
+  bool handle_relative_path(std::vector<std::string>& path_tokens) {
+    for (const auto& token : path_tokens) {
+        if (token == "..") {
+            // Move up one level: pop the last directory from WORKING_DIRECTORY
+            if (!WORKING_DIRECTORY.empty()) {
+                size_t pos = WORKING_DIRECTORY.find_last_of('/');
+                if (pos != std::string::npos) {
+                    WORKING_DIRECTORY = WORKING_DIRECTORY.substr(0, pos);
+                }
+            }
+        } else if (token != "." && token != "") {
+            // For any other valid directory name, add it to WORKING_DIRECTORY
+            if (WORKING_DIRECTORY.back() != '/') {
+                WORKING_DIRECTORY += '/';
+            }
+            WORKING_DIRECTORY += token;
+        }
     }
 
-  }
-
-  return true;
-  
-
+    // After handling all tokens, ensure the path is valid
+    return is_path_exist(WORKING_DIRECTORY);
 }
+
 bool change_directory(const std::string& path){
   std::string trimmed_path = trim(path);
   std::vector<std::string> path_tokens = split(trimmed_path,'/');
@@ -123,7 +111,7 @@ bool change_directory(const std::string& path){
   else if(path_tokens[0] == "." || path_tokens[0] == "..")
   {
     //handel relative path
-    if(handel_relative_path(path_tokens))
+    if(handle_relative_path(path_tokens))
     {
       return true;
     }
