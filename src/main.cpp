@@ -10,6 +10,15 @@
 
 std::string WORKING_DIRECTORY = std::filesystem::current_path().string();
 
+
+std::string trim(const std::string &str) {
+    size_t first = str.find_first_not_of(" ");
+    size_t last = str.find_last_not_of(" ");
+    return (first == std::string::npos || last == std::string::npos)
+               ? ""
+               : str.substr(first, last - first + 1);
+}
+
 std::vector<std::string> split(const std::string &s, char delimiter)
 {
   std::vector<std::string> tokens;
