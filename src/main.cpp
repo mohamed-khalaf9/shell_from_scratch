@@ -7,6 +7,7 @@
 #include <vector>
 #include <filesystem>
 #include <stack>
+#include <fstream>
 
 
 std::string WORKING_DIRECTORY = std::filesystem::current_path().string();
@@ -261,6 +262,39 @@ int main()
         std::cout<<argument<<": No such file or directory\n";
       }
       
+
+    }
+    else if(command=="cat" || command == "cat:")
+    {
+      std::vector<std::string> file_paths = split(argument,' ');
+      for(const auto& path : file_paths)
+      {
+        std::string file_path = trim(path);
+        if(is_path_exist(file_path))
+        {
+          std::ifstream file(file_path);
+
+          if(file.is_open()){
+          std::string line;
+          while(std::getline(file,line))
+          {
+            std::cout<<line<<std::endl;
+          }
+          file.close();
+          }
+          else
+          {
+            std::cout<<file_path<<": No such file or directory\n";
+          }
+          
+
+        }
+        else
+        {
+            std::cout<<file_path<<": No such file or directory\n";
+          }
+
+      }
 
     }
     else
