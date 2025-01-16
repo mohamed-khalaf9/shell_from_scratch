@@ -143,46 +143,57 @@ bool change_directory(const std::string& path){
 
 }
 
-std::string handle_quoting(std::string argument)
+std::vector<std::string> handle_quoting(std::string argument)
 {
   std::stack<char> qoutes;
-  std::string res = "";
+  std::vector<std::string> tokens;
   std::string token = "";
+  bool inside_qoutes = false;
 
-  if(argument.empty())  return argument;
+ 
 
   // handel single qoutes
   if(argument[0] == '\'')
   {
     for(auto c: argument)
     {
-      if(qoutes.empty() && c=='\'')
-      qoutes.push(c);
+      if(qoutes.empty() && c=='\''){
+        if(token!="")
+        {
+          tokens.push_back(token);
+          token.clear();
+        }
+        qoutes.push(c);
+        inside_qoutes = true;
+        continue;
+      }
 
-      else if(!qoutes.empty() && c=='\'')
+      else if(!qoutes.empty() && c=='\'' && qoutes.top()=='\'')
       {
         qoutes.pop();
-        res+=token;
-        token="";
+        tokens.push_back(token);
+        token.clear();
+        inside_qoutes = false;
+        continue;
       }
       else
       {
-        if(!qoutes.empty()) 
-        token+=c;
-        else
-         res+=c;
+       token += c;
       }
     }
 
     if(!qoutes.empty())
-     return argument;
+    {
+      tokens.clear();
+      return tokens;
+    }
 
 
-    return res;
+    return tokens;
 
   }
   else
-  return argument;
+  return tokens;
 }
 std::string remove_extra_spaces(const std::string& str) {
     std::stringstream ss(str);
@@ -202,6 +213,7 @@ std::string remove_extra_spaces(const std::string& str) {
 
 int main()
 {
+
   // Flush after every std::cout / std:cerr
   std::cout << std::unitbuf;
   std::cerr << std::unitbuf;
@@ -243,7 +255,7 @@ int main()
       {
         if(argument[0] == '\'')
         {
-          argument = handle_quoting(argument);
+         // argument = handle_quoting(argument);
           std::cout << argument << std::endl;
         }
         else
@@ -295,8 +307,8 @@ int main()
     }
     else if(command=="cat" || command == "cat:")
     {
-      argument = handle_quoting(argument);
-      argument = trim(argument);
+      //argument = handle_quoting(argument);
+      //argument = trim(argument);
       std::vector<std::string> file_paths = split(argument,' ');
       for(const auto& path : file_paths)
       {
