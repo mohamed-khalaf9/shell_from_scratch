@@ -327,28 +327,22 @@ int main()
       {
         if(is_path_exist(path))
         {
-          if(path =="") continue;
+          if(path ==" ") continue;
           std::ifstream file(path);
 
           if(file.is_open()){
           std::string line;
           while(std::getline(file,line))
           {
-            std::cout<<line<<std::endl;
+            std::cout<<line;
           }
           file.close();
           }
-          else
-          {
-            std::cout<<path<<": No such file or directory\n";
-          }
+          
           
 
         }
-        else
-        {
-            std::cout<<path<<": No such file or directory\n";
-        }
+       
 
       }
 
