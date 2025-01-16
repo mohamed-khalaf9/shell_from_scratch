@@ -336,6 +336,7 @@ int main()
           {
             std::cout<<line;
           }
+          std::cout<<std::endl;
           file.close();
           }
           
