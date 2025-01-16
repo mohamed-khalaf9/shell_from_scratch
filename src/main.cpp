@@ -325,9 +325,10 @@ int main()
       std::vector<std::string> file_paths = handle_quoting(argument);
       for(const auto& path : file_paths)
       {
-        if(is_path_exist(path))
+        if(path!= " " && is_path_exist(path))
         {
-          if(path ==" ") continue;
+          
+
           std::ifstream file(path);
 
           if(file.is_open()){
@@ -336,9 +337,9 @@ int main()
           {
             std::cout<<line;
           }
-          std::cout<<std::endl;
           file.close();
           }
+          
           
           
 
@@ -346,6 +347,7 @@ int main()
        
 
       }
+      std::cout<<std::endl;
 
       }
     
