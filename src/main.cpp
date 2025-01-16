@@ -217,15 +217,15 @@ int main()
     argument = trim(argument);
     argument = handle_quoting(argument);
     argument = trim(argument);
+
     if (command == "exit")
     {
       exit(stoi(argument));
     }
     else if (command == "echo" || command == "echo:")
     {
-      if (!argument.empty() && argument[0] == ' ')
+      if (!argument.empty())
       {
-        argument.erase(argument.begin());
         std::cout << argument << std::endl;
       }
     }
