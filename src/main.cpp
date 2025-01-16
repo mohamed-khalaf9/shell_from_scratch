@@ -142,7 +142,7 @@ bool change_directory(const std::string& path){
 
 }
 
-std::string handel_qouting(std::string argument)
+std::string handle_quoting(std::string argument)
 {
   std::stack<char> qoutes;
   std::string res = "";
@@ -206,6 +206,7 @@ int main()
     ss >> command;
 
     std::getline(ss, argument);
+    argument = handle_quoting(argument);
 
     if (command == "exit")
     {
