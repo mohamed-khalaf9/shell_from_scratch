@@ -214,8 +214,8 @@ int main()
     ss >> command;
 
     std::getline(ss, argument);
+    argument = trim(argument);
     argument = handle_quoting(argument);
-
     if (command == "exit")
     {
       exit(stoi(argument));
