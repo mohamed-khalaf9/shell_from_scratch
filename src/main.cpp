@@ -277,15 +277,14 @@ int main()
     }
     else if (command == "type" || command == "type:")
     {
-      if (!argument.empty() && argument[0] == ' ')
-      {
-        argument.erase(argument.begin());
-      }
+      argument = trim(argument);
 
-      if (commands.count(argument))
+      if(!argument.empty())
       {
+        if (commands.count(argument))
+        {
         std::cout << argument << " " << commands[argument] << std::endl;
-      }
+        }
       else
       {
         // check if this is an executable file
@@ -299,6 +298,10 @@ int main()
           std::cout << argument << ": not found\n";
         }
       }
+
+      }
+
+      
     }
     else if(command=="pwd" || command=="pwd:"){
       std::cout<<WORKING_DIRECTORY<<std::endl;
@@ -318,15 +321,13 @@ int main()
     }
     else if(command=="cat" || command == "cat:")
     {
-      //argument = handle_quoting(argument);
-      //argument = trim(argument);
-      std::vector<std::string> file_paths = split(argument,' ');
+      if(!argument.empty()){
+      std::vector<std::string> file_paths = handle_quoting(argument);
       for(const auto& path : file_paths)
       {
-        std::string file_path = trim(path);
-        if(is_path_exist(file_path))
+        if(is_path_exist(path))
         {
-          std::ifstream file(file_path);
+          std::ifstream file(path);
 
           if(file.is_open()){
           std::string line;
@@ -338,17 +339,20 @@ int main()
           }
           else
           {
-            std::cout<<file_path<<": No such file or directory\n";
+            std::cout<<path<<": No such file or directory\n";
           }
           
 
         }
         else
         {
-            std::cout<<file_path<<": No such file or directory\n";
+            std::cout<<path<<": No such file or directory\n";
           }
 
       }
+
+      }
+    
 
     }
     else
