@@ -173,7 +173,9 @@ std::string handle_quoting(std::string argument)
     }
 
     if(!qoutes.empty()) return argument;
-    else return res;
+
+
+    return res;
 
   }
   else
