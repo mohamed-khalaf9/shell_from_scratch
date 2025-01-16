@@ -255,8 +255,19 @@ int main()
       {
         if(argument[0] == '\'')
         {
-         // argument = handle_quoting(argument);
-          std::cout << argument << std::endl;
+         std::vector<std::string> tokens = handle_quoting(argument);
+         if(tokens.size()==0)
+         {
+          std::cout<<argument<<": syntax error\n";
+         }
+         else
+         {
+          for(const auto& token: tokens)
+          {
+            std::cout<<token;
+          }
+          std::cout<<std::endl;
+         }
         }
         else
         {
