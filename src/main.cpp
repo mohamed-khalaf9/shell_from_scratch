@@ -295,6 +295,8 @@ int main()
     }
     else if(command=="cat" || command == "cat:")
     {
+      argument = handle_quoting(argument);
+      argument = trim(argument);
       std::vector<std::string> file_paths = split(argument,' ');
       for(const auto& path : file_paths)
       {
