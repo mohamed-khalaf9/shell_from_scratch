@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include <filesystem>
+#include <stack>
 
 
 std::string WORKING_DIRECTORY = std::filesystem::current_path().string();
@@ -139,6 +140,43 @@ bool change_directory(const std::string& path){
   return false;
   }
 
+}
+
+std::string handel_qouting(std::string argument)
+{
+  std::stack<char> qoutes;
+  std::string res = "";
+  std::string token = "";
+
+  if(argument.empty())  return argument;
+
+  // handel single qoutes
+  if(argument[0] == '\'')
+  {
+    for(auto c: argument)
+    {
+      if(qoutes.empty() && c=='\'')
+      qoutes.push(c);
+
+      else if(!qoutes.empty() && c=='\'')
+      {
+        qoutes.pop();
+        res+=token;
+        token="";
+      }
+      else
+      {
+        if(!qoutes.empty()) token+=c;
+        else res+=c;
+      }
+    }
+
+    if(!qoutes.empty()) return argument;
+    else return res;
+
+  }
+  else
+  return argument;
 }
 
 int main()
