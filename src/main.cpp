@@ -191,6 +191,8 @@ int main()
   commands.emplace("echo", "is a shell builtin");
   commands.emplace("exit", "is a shell builtin");
   commands.emplace("pwd", "is a shell builtin");
+  commands.emplace("cd", "is a shell builtin");
+  commands.emplace("cat", "is a shell builtin");
 
   // Uncomment this block to pass the first stage
   std::string input;
