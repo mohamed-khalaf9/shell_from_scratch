@@ -217,6 +217,7 @@ int main()
     argument = trim(argument);
     argument = handle_quoting(argument);
     argument = trim(argument);
+   
 
     if (command == "exit")
     {
