@@ -230,8 +230,7 @@ int main()
 
     std::getline(ss, argument);
     argument = trim(argument);
-    argument = handle_quoting(argument);
-    argument = trim(argument);
+    
    
 
     if (command == "exit")
@@ -242,7 +241,15 @@ int main()
     {
       if (!argument.empty())
       {
-        std::cout << argument << std::endl;
+        if(argument[0] == '\'')
+        {
+          argument = handle_quoting(argument);
+          std::cout << argument << std::endl;
+        }
+        else
+        {
+          std::cout << remove_extra_spaces(argument) << std::endl;
+        }
       }
     }
     else if (command == "type" || command == "type:")
