@@ -167,12 +167,15 @@ std::string handle_quoting(std::string argument)
       }
       else
       {
-        if(!qoutes.empty()) token+=c;
-        else res+=c;
+        if(!qoutes.empty()) 
+        token+=c;
+        else
+         res+=c;
       }
     }
 
-    if(!qoutes.empty()) return argument;
+    if(!qoutes.empty())
+     return argument;
 
 
     return res;
