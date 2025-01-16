@@ -327,6 +327,7 @@ int main()
       {
         if(is_path_exist(path))
         {
+          if(path =="") continue;
           std::ifstream file(path);
 
           if(file.is_open()){
@@ -347,7 +348,7 @@ int main()
         else
         {
             std::cout<<path<<": No such file or directory\n";
-          }
+        }
 
       }
 
