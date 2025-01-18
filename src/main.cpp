@@ -382,6 +382,11 @@ int main()
           std::cout<<std::endl;
          }
         }
+        // handle backslach in non quoted arguments for echo command
+        else if(argument.find('\\') != std::string::npos)
+        {
+          std::cout<<handle_non_quoted_backslash(argument)<<std::endl;
+        }
         else
         {
           std::cout << remove_extra_spaces(argument) << std::endl;
