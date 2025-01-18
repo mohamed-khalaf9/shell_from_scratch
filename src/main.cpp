@@ -184,13 +184,12 @@ std::vector<std::string> handle_double_quotes(const std::string& argument){
         token+=c;
         continue;
       }
-      else if(c=='\\' || c=='$' || c=='n' || c=='\"' )
+      else if(c=='\\' || c=='$' || c=='n' || c=='\"'  && escape)
       {
-        if(escape){
+       
           token +=c;
           escape = false;
           continue;
-        }
         // for future handling of specail characters using else
 
       }
