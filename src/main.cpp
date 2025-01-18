@@ -142,20 +142,14 @@ bool change_directory(const std::string& path){
   }
 
 }
-
-std::vector<std::string> handle_quoting(std::string argument)
+std::vector<std::string> handle_single_qoutes(const std::string & argument)
 {
   std::stack<char> qoutes;
   std::vector<std::string> tokens;
   std::string token = "";
   bool inside_qoutes = false;
 
- 
-
-  // handel single qoutes
-  if(argument[0] == '\'')
-  {
-    for(auto c: argument)
+   for(auto c: argument)
     {
       if(qoutes.empty() && c=='\''){
         if(token!="")
@@ -180,9 +174,8 @@ std::vector<std::string> handle_quoting(std::string argument)
       {
        token += c;
       }
-    }
 
-    if(!qoutes.empty())
+      if(!qoutes.empty())
     {
       tokens.clear();
       return tokens;
@@ -191,6 +184,21 @@ std::vector<std::string> handle_quoting(std::string argument)
 
     return tokens;
 
+    }
+  
+  
+
+}
+
+std::vector<std::string> handle_quoting(std::string argument)
+{
+  std::vector<std::string> tokens;
+  
+  // handel single qoutes
+  if(argument[0]=='\'')
+  {
+    tokens = handle_single_qoutes(argument);
+    return tokens;
   }
   else
   return tokens;
