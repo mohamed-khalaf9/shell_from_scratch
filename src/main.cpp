@@ -179,6 +179,11 @@ std::vector<std::string> handle_double_quotes(const std::string& argument){
         escape = true;
         continue;
       }
+      else if(c=='\\' && !escape)
+      {
+        token+=c;
+        continue;
+      }
       else if(c=='\\' || c=='$' || c=='n' || c=='\"' )
       {
         if(escape){
