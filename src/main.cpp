@@ -150,7 +150,7 @@ std::vector<std::string> handle_double_quotes(const std::string& argument)
   bool inside_qoutes = false;
   bool escape = false;
 
-   for(int i=0 ; i<argument.size(); i++)
+   for(int i=0 ; i<(int)argument.size(); i++)
     {
       char c = argument[i];
       
@@ -289,7 +289,6 @@ std::string remove_extra_spaces(const std::string& str) {
 
 int main()
 {
-
   // Flush after every std::cout / std:cerr
   std::cout << std::unitbuf;
   std::cerr << std::unitbuf;
@@ -329,7 +328,7 @@ int main()
     {
       if (!argument.empty())
       {
-        if(argument[0] == '\'')
+        if(argument[0] == '\'' || argument[0] == '\"')
         {
          std::vector<std::string> tokens = handle_quoting(argument);
          if(tokens.size()==0)
