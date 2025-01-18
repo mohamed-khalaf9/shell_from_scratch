@@ -165,7 +165,7 @@ std::vector<std::string> handle_double_quotes(const std::string& argument)
         continue;
       }
 
-      else if(!qoutes.empty() && c=='\'' && qoutes.top()=='\"' && !escape)
+      else if(!qoutes.empty() && c=='\"' && qoutes.top()=='\"' && !escape)
       {
         qoutes.pop();
         tokens.push_back(token);
@@ -193,7 +193,9 @@ std::vector<std::string> handle_double_quotes(const std::string& argument)
        token += c;
       }
 
-      if(!qoutes.empty())
+    }
+    
+    if(!qoutes.empty())
     {
       tokens.clear();
       return tokens;
@@ -202,8 +204,7 @@ std::vector<std::string> handle_double_quotes(const std::string& argument)
 
     return tokens;
 
-    }
-
+  
 }
 std::vector<std::string> handle_single_qoutes(const std::string & argument)
 {
@@ -238,7 +239,10 @@ std::vector<std::string> handle_single_qoutes(const std::string & argument)
        token += c;
       }
 
-      if(!qoutes.empty())
+  
+
+    }
+        if(!qoutes.empty())
     {
       tokens.clear();
       return tokens;
@@ -246,8 +250,6 @@ std::vector<std::string> handle_single_qoutes(const std::string & argument)
 
 
     return tokens;
-
-    }
   
   
 
