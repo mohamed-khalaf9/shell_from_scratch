@@ -173,7 +173,7 @@ std::vector<std::string> handle_double_quotes(const std::string& argument)
         inside_qoutes = false;
         continue;
       }
-      else if(c=='\\' && !escape && (argument[i+1]=='\"' || argument[i+1]=='\\' || argument[i+1]=='$'|| argument[i+1]=='n'))
+      else if(c=='\\' && !escape && ((i+1<(int)argument.size())&& (argument[i+1]=='\"' || argument[i+1]=='\\' || argument[i+1]=='$'|| argument[i+1]=='n')))
       {
         escape = true;
         continue;
