@@ -304,6 +304,25 @@ std::string remove_extra_spaces(const std::string& str) {
     return result;
 }
 
+std::string handle_non_quoted_backslash(const std::string& argument)
+{
+  std::string res="";
+  if(argument.find('\\') != std::string::npos && argument[0] != '\'' && argument[0]!='\"' )
+  {
+    for(const auto& c: argument)
+    {
+      if(c=='\\')
+      continue;
+      
+      res+=c;
+    }
+    return res;
+  }
+  else
+  return argument;
+
+}
+
 
 int main()
 {
