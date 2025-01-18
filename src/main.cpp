@@ -155,6 +155,7 @@ std::vector<std::string> handle_double_quotes(const std::string& argument){
       char c = argument[i];
       
       if(qoutes.empty() && c=='\"' && !escape){
+        prev_space = false;
         if(token!="")
         {
           tokens.push_back(token);
