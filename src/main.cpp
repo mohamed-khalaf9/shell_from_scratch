@@ -192,6 +192,7 @@ std::vector<std::string> handle_double_quotes(const std::string& argument){
         // Add regular characters
         else if (!isspace(c) || inside_quotes) {
             token += c;
+            prev_space = false; // Reset the flag to indicate a non-space character
         }
 
           // Handle spaces outside quotes (normalize them to one space)
