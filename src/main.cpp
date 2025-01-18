@@ -142,13 +142,13 @@ bool change_directory(const std::string& path){
   }
 
 }
-std::vector<std::string> handle_double_quotes(const std::string& argument)
-{
+std::vector<std::string> handle_double_quotes(const std::string& argument){
   std::stack<char> qoutes;
   std::vector<std::string> tokens;
   std::string token = "";
-  bool inside_qoutes = false;
+  bool inside_quotes = false;
   bool escape = false;
+  bool prev_space = false;
 
    for(int i=0 ; i<(int)argument.size(); i++)
     {
@@ -161,7 +161,7 @@ std::vector<std::string> handle_double_quotes(const std::string& argument)
           token.clear();
         }
         qoutes.push(c);
-        inside_qoutes = true;
+        inside_quotes = true;
         continue;
       }
 
@@ -170,7 +170,7 @@ std::vector<std::string> handle_double_quotes(const std::string& argument)
         qoutes.pop();
         tokens.push_back(token);
         token.clear();
-        inside_qoutes = false;
+        inside_quotes = false;
         continue;
       }
       else if(c=='\\' && !escape && ((i+1<(int)argument.size())&& (argument[i+1]=='\"' || argument[i+1]=='\\' || argument[i+1]=='$'|| argument[i+1]=='n')))
@@ -188,11 +188,22 @@ std::vector<std::string> handle_double_quotes(const std::string& argument)
         // for future handling of specail characters using else
 
       }
-      else
-      {
-       token += c;
-      }
+        // Add regular characters
+        else if (!isspace(c) || inside_quotes) {
+            token += c;
+        }
 
+          // Handle spaces outside quotes (normalize them to one space)
+        else if (isspace(c) && !inside_quotes) {
+            if (!prev_space) { // Only add one space if the previous character wasn't a space
+                if (!token.empty()) {
+                    tokens.push_back(token);
+                    token.clear();
+                }
+                token += " "; // Add exactly one space
+                prev_space = true; // Set the flag to indicate a space has been added
+            }
+    }
     }
     
     if(!qoutes.empty())
@@ -204,8 +215,7 @@ std::vector<std::string> handle_double_quotes(const std::string& argument)
 
     return tokens;
 
-  
-}
+    }
 std::vector<std::string> handle_single_qoutes(const std::string & argument)
 {
   std::stack<char> qoutes;
