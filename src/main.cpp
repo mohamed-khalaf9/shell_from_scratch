@@ -142,6 +142,69 @@ bool change_directory(const std::string& path){
   }
 
 }
+std::vector<std::string> handle_double_quotes(const std::string& argument)
+{
+  std::stack<char> qoutes;
+  std::vector<std::string> tokens;
+  std::string token = "";
+  bool inside_qoutes = false;
+  bool escape = false;
+
+   for(int i=0 ; i<argument.size(); i++)
+    {
+      char c = argument[i];
+      
+      if(qoutes.empty() && c=='\"' && !escape){
+        if(token!="")
+        {
+          tokens.push_back(token);
+          token.clear();
+        }
+        qoutes.push(c);
+        inside_qoutes = true;
+        continue;
+      }
+
+      else if(!qoutes.empty() && c=='\'' && qoutes.top()=='\"' && !escape)
+      {
+        qoutes.pop();
+        tokens.push_back(token);
+        token.clear();
+        inside_qoutes = false;
+        continue;
+      }
+      else if(c=='\\' && !escape && (argument[i+1]=='\"' || argument[i+1]=='\\' || argument[i+1]=='$'|| argument[i+1]=='n'))
+      {
+        escape = true;
+        continue;
+      }
+      else if(c=='\\' || c=='$' || c=='n' || c=='\"' )
+      {
+        if(escape){
+          token +=c;
+          escape = false;
+          continue;
+        }
+        // for future handling of specail characters using else
+
+      }
+      else
+      {
+       token += c;
+      }
+
+      if(!qoutes.empty())
+    {
+      tokens.clear();
+      return tokens;
+    }
+
+
+    return tokens;
+
+    }
+
+}
 std::vector<std::string> handle_single_qoutes(const std::string & argument)
 {
   std::stack<char> qoutes;
@@ -193,11 +256,16 @@ std::vector<std::string> handle_single_qoutes(const std::string & argument)
 std::vector<std::string> handle_quoting(std::string argument)
 {
   std::vector<std::string> tokens;
-  
+
   // handel single qoutes
   if(argument[0]=='\'')
   {
     tokens = handle_single_qoutes(argument);
+    return tokens;
+  }
+  else if(argument[0]=='\"')
+  {
+    tokens = handle_double_quotes(argument);
     return tokens;
   }
   else
