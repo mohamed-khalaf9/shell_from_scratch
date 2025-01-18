@@ -174,7 +174,7 @@ std::vector<std::string> handle_double_quotes(const std::string& argument){
         inside_quotes = false;
         continue;
       }
-      else if(c=='\\' && !escape && ((i+1<(int)argument.size())&& (argument[i+1]=='\"' || argument[i+1]=='\\' || argument[i+1]=='$'|| argument[i+1]=='n')))
+      else if(c=='\\' && !escape && ((i+1<(int)argument.size())&& (argument[i+1]=='\"' || argument[i+1]=='\\' || argument[i+1]=='$')))
       {
         escape = true;
         continue;
@@ -184,7 +184,7 @@ std::vector<std::string> handle_double_quotes(const std::string& argument){
         token+=c;
         continue;
       }
-      else if(c=='\\' || c=='$' || c=='n' || c=='\"'  && escape)
+      else if(c=='\\' || c=='$' || c=='\"'  && escape)
       {
        
           token +=c;
