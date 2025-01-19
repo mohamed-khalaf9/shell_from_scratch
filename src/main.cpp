@@ -193,13 +193,7 @@ std::vector<std::string> handle_double_quotes(const std::string& argument){
         // for future handling of specail characters using else
 
       }
-        // Add regular characters
-        else if (!isspace(c) || inside_quotes) {
-            token += c;
-            prev_space = false; // Reset the flag to indicate a non-space character
-        }
-
-          // Handle spaces outside quotes (normalize them to one space)
+        // Handle spaces outside quotes (normalize them to one space)
         else if (isspace(c) && !inside_quotes) {
             if (!prev_space) { // Only add one space if the previous character wasn't a space
                 if (!token.empty()) {
@@ -210,7 +204,13 @@ std::vector<std::string> handle_double_quotes(const std::string& argument){
                 prev_space = true; // Set the flag to indicate a space has been added
             }
     }
+       
+            token += c;
+            
+        
+        
     }
+    tokens.push_back(token);
     
     if(!qoutes.empty())
     {
