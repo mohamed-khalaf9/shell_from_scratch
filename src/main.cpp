@@ -477,8 +477,11 @@ int main()
 
       // exectue programm 
       // handle quoted executable
-      std::vector<std::string> tokens = handle_quoting(command);
       std::string programm_name;
+      if(command[0] == '\'' || command[0] == '\"')
+      {
+      std::vector<std::string> tokens = handle_quoting(command);
+      
       if(tokens.size()==0)
       {
         std::cout<<command<<": syntax error\n";
@@ -491,6 +494,10 @@ int main()
           programm_name+= token;
 
         }
+      }
+      }
+      else{
+        programm_name = command;
       }
       std::string programm_argument = argument;
 
