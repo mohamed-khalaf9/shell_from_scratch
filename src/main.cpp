@@ -203,8 +203,9 @@ std::vector<std::string> handle_double_quotes(const std::string& argument){
                 token += " "; // Add exactly one space
                 prev_space = true; // Set the flag to indicate a space has been added
             }
+            continue;
     }
-       
+            prev_space = false;
             token += c;
             
         
