@@ -475,8 +475,23 @@ int main()
     else
     {
 
-      // exectue programm
-      std::string programm_name = command;
+      // exectue programm 
+      // handle quoted executable
+      std::vector<std::string> tokens = handle_quoting(command);
+      std::string programm_name;
+      if(tokens.size()==0)
+      {
+        std::cout<<command<<": syntax error\n";
+        continue;
+      }
+      else
+      {
+        for(const auto& token: tokens)
+        {
+          programm_name+= token;
+
+        }
+      }
       std::string programm_argument = argument;
 
       // check if programm is an executable file
