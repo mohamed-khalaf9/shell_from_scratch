@@ -526,36 +526,17 @@ int main()
     else if(command=="cat" || command == "cat:")
     {
       handle_cat(argument);
-    
-
     }
     else
     {
-
-      // exectue programm 
-      // handle quoted executable
-      std::string programm_name;
       if(command[0] == '\'' || command[0] == '\"')
-      {      
-      std::vector<std::string> tokens = handle_quoting(command);
-      
-      if(tokens.size()==0)
       {
-        std::cout<<command<<": syntax error\n";
+        handle_cat(argument);
         continue;
       }
-      else
-      {
-        for(const auto& token: tokens)
-        {
-          programm_name+= token;
 
-        }
-      }
-      }
-      else{
-        programm_name = command;
-      }
+      // exectue programm 
+      std::string programm_name = command;
       std::string programm_argument = argument;
 
       // check if programm is an executable file
