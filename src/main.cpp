@@ -324,6 +324,58 @@ std::string handle_non_quoted_backslash(const std::string& argument)
 
 }
 
+void handle_cat(const std::string& argument)
+{
+  if(!argument.empty()){
+      if(argument[0] == '\'' || argument[0] == '\"')
+      {
+      std::vector<std::string> file_paths = handle_quoting(argument);
+      for(const auto& path : file_paths)
+      {
+        if(path!= " " && is_path_exist(path))
+        {
+          
+
+          std::ifstream file(path);
+
+          if(file.is_open()){
+          std::string line;
+          while(std::getline(file,line))
+          {
+            std::cout<<line;
+          }
+          file.close();
+          }
+          
+          
+          
+
+        }
+       
+
+      }
+      }
+      else
+      {
+        if(argument!= " " && is_path_exist(argument))
+        {
+          std::ifstream file(argument);
+          if(file.is_open()){
+          std::string line;
+          while(std::getline(file,line))
+          {
+            std::cout<<line;
+          }
+          file.close();
+          }
+      }
+      std::cout<<std::endl;
+
+    
+  }
+}
+}
+
 
 int main()
 {
@@ -473,35 +525,7 @@ int main()
     }
     else if(command=="cat" || command == "cat:")
     {
-      if(!argument.empty()){
-      std::vector<std::string> file_paths = handle_quoting(argument);
-      for(const auto& path : file_paths)
-      {
-        if(path!= " " && is_path_exist(path))
-        {
-          
-
-          std::ifstream file(path);
-
-          if(file.is_open()){
-          std::string line;
-          while(std::getline(file,line))
-          {
-            std::cout<<line;
-          }
-          file.close();
-          }
-          
-          
-          
-
-        }
-       
-
-      }
-      std::cout<<std::endl;
-
-      }
+      handle_cat(argument);
     
 
     }
@@ -512,7 +536,7 @@ int main()
       // handle quoted executable
       std::string programm_name;
       if(command[0] == '\'' || command[0] == '\"')
-      {
+      {      
       std::vector<std::string> tokens = handle_quoting(command);
       
       if(tokens.size()==0)
