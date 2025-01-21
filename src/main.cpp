@@ -532,7 +532,6 @@ int main()
       if(command[0] == '\'' || command[0] == '\"')
       {
         handle_cat(argument);
-        std::cout<<std::endl;
         continue;
       }
 
