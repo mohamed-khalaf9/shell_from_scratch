@@ -368,11 +368,9 @@ void handle_cat(const std::string& argument)
           }
           file.close();
           }
-      }
-      std::cout<<std::endl;
-
-    
+        }
   }
+  std::cout<<std::endl;
 }
 }
 
