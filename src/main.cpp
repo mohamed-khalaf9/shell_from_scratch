@@ -356,7 +356,7 @@ void handle_cat(const std::string& argument)
         }
         else
         {
-          std::cerr<<path<<": No such file or directory\n";
+          std::cerr<<"cat: "<<path<<": No such file or directory\n";
         }
        
 
@@ -387,7 +387,7 @@ void handle_cat(const std::string& argument)
 
         }
         else{
-          std::cerr<<path<<": No such file or directory\n";
+          std::cerr<<"cat: "<<path<<": No such file or directory\n";
         }
        
 
@@ -420,7 +420,7 @@ void handle_ls(const std::string& argument)
     }
     else
     {
-      std::cerr<<argument<<": No such file or directory\n";
+      std::cerr<<"ls: cannot access "<<"'"<<argument<<"'"<<": No such file or directory\n";
     }
   }
 }
@@ -463,7 +463,7 @@ void handle_redirection(const std::string& op, std::string file_name)
   std::string tmp_file_name="";
   if(file_name.empty())
   {
-    return;
+    return; // set redirection to defualt output
   }
   //handle quoted file name
   if(file_name[0]== '\'' || file_name[0] =='\"')
@@ -585,12 +585,13 @@ int main()
     if (pos < input.size()) {
         argument = input.substr(pos);
     }
+
     int redirection_index = detect_redirection(argument);
     if(redirection_index !=-1)
     {
       int start=redirection_index;
       int end=redirection_index;
-      std::string op= std::to_string(argument[redirection_index]);
+      std::string op= std::string(1,argument[redirection_index]);
       std::string arg="";
       std::string file_name="";
       if(argument[redirection_index-1]=='1' || argument[redirection_index-1]=='2')
