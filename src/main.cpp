@@ -11,10 +11,7 @@
 
 
 std::string WORKING_DIRECTORY = std::filesystem::current_path().string();
-std::streambuf* ORIGINALCOUTBUF = std::cout.rdbuf();
-std::streambuf* ORIGINALCERRBUF = std::cerr.rdbuf();
-std::streambuf* CURCOUTPATH = ORIGINALCOUTBUF;
-std::streambuf* CURCERRPATH = ORIGINALCERRBUF;
+std::ofstream file; // for redirection
 
 std::string trim(const std::string &str) {
     size_t first = str.find_first_not_of(" ");
@@ -481,12 +478,12 @@ int detect_redirection(const std::string& argument)
   return -1;
 }
 
-void handle_redirection(const std::string& op, std::string file_name)
+std::pair<std::string,std::streambuf*> handle_redirection(const std::string& op, std::string file_name)
 {
   std::string tmp_file_name="";
   if(file_name.empty())
   {
-    return; // set redirection to defualt output
+    return {"cout",std::cout.rdbuf()}; // set redirection to defualt output
   }
   //handle quoted file name
   if(file_name[0]== '\'' || file_name[0] =='\"')
@@ -507,51 +504,59 @@ void handle_redirection(const std::string& op, std::string file_name)
 
   if(op == ">" || op == "1>")
   {
-    std::ofstream file(file_name);
+    file.open(file_name);
     if(file.is_open()){
-    CURCOUTPATH = file.rdbuf();
-    
-    
+    return {"cout",file.rdbuf()};
+
     }
     else{
     std::cerr<<file_name<<": No such file or directory\n";}
   }
   else if(op == ">>" || op == "1>>")
   {
-    std::ofstream file(file_name,std::ios::app);
+  file.open(file_name,std::ios::app);
   if(file.is_open()){
-    CURCOUTPATH = file.rdbuf();
+    return {"cout",file.rdbuf()};
     }
     else
     std::cerr<<file_name<<": No such file or directory\n";
   }
   else if(op == "2>")
   {
-    std::ofstream file(file_name);
+    file.open(file_name);
     if(file.is_open())
-    CURCERRPATH = file.rdbuf();
+    return {"cerr",file.rdbuf()};
     else
     std::cerr<<file_name<<": No such file or directory\n";
   }
   else if(op == "2>>")
   {
-    std::ofstream file(file_name,std::ios::app);
+    file.open(file_name,std::ios::app);
     if(file.is_open())
-    CURCERRPATH = file.rdbuf();
+    return {"cerr",file.rdbuf()};
     else
     std::cerr<<file_name<<": No such file or directory\n";
 
+  }
+  else
+  {
+    return {"cout",std::cout.rdbuf()};
   }
 
 }
 
 
+
 int main()
 {
+ 
+std::streambuf* cout_original_buf = std::cout.rdbuf(); 
+std::streambuf* cerr_original_buf = std::cerr.rdbuf(); 
+
+
   
-  // Flush after every std::cout / std:cerr
-  std::cout << std::unitbuf;
-  std::cerr << std::unitbuf;
+  
+ 
 
   // shell commands and descriptions
   std::unordered_map<std::string, std::string> commands;
@@ -637,10 +642,18 @@ int main()
       arg = trim(arg);
       file_name = trim(file_name);
       argument = arg;
-      handle_redirection(op,file_name);
-      std::cout.rdbuf(CURCOUTPATH);
-      std::cerr.rdbuf(CURCERRPATH);
+      std::pair<std::string, std::streambuf*> p = handle_redirection(op,file_name);
+      if(p.first == "cout")
+      {
+        std::cout.rdbuf(p.second);
+      }
+      else if(p.first == "cerr")
+      {
+        std::cerr.rdbuf(p.second);
+      }
     }
+   
+    
     
    
 
@@ -650,6 +663,7 @@ int main()
     }
     else if (command == "echo" || command == "echo:")
     {
+     
       if (!argument.empty())
       {
         if(argument[0] == '\'' || argument[0] == '\"')
@@ -676,7 +690,9 @@ int main()
         }
         else
         {
-          std::cout << remove_extra_spaces(argument) + "\n";
+          
+          std::string res = remove_extra_spaces(argument);
+          std::cout << res << "\n";
         }
       }
     }
@@ -757,9 +773,10 @@ int main()
         std::cerr<< programm_name << ": not found\n";
       }
     }
-    CURCOUTPATH = ORIGINALCOUTBUF;
-    CURCERRPATH = ORIGINALCERRBUF;
-    std::cout.rdbuf(ORIGINALCOUTBUF);
-    std::cerr.rdbuf(ORIGINALCERRBUF);
+    std::cout.rdbuf(cout_original_buf);
+    std::cerr.rdbuf(cerr_original_buf);
+    file.close();
+    
+
   }
 }
