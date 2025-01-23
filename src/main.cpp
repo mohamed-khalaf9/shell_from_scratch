@@ -79,6 +79,8 @@ std::string remove_last_token_from_working_directory(const std::string &workingD
 }
 
 
+
+
   bool handle_relative_path(std::vector<std::string>& path_tokens) {
     for (const auto& token : path_tokens) {
         if (token == "..") {
@@ -374,6 +376,34 @@ void handle_cat(const std::string& argument)
 }
 }
 
+void handle_ls(const std::string& argument)
+{
+  if(argument.empty())
+  {
+    for(const auto& entry: std::filesystem::directory_iterator(WORKING_DIRECTORY))
+    {
+      std::cout<<entry.path().filename()<<std::endl;
+    }
+  }
+  else{
+    if(is_path_exist(argument) && std::filesystem::is_directory(argument))
+    {
+      for(const auto& entry: std::filesystem::directory_iterator(argument))
+      {
+        std::cout<<entry.path().filename()<<std::endl;
+      }
+    }
+    else if(is_path_exist(argument) && !std::filesystem::is_regular_file(argument))
+    {
+      std::cout<<argument<<std::endl;
+    }
+    else
+    {
+      std::cerr<<argument<<": No such file or directory\n";
+    }
+  }
+}
+
 
 int main()
 {
@@ -524,6 +554,10 @@ int main()
     else if(command=="cat" || command == "cat:")
     {
       handle_cat(argument);
+    }
+    else if(command == "ls" || command == "ls:")
+    {
+      handle_ls(argument);
     }
     else
     {
