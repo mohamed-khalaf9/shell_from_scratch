@@ -397,8 +397,28 @@ void handle_cat(const std::string& argument)
 }
 }
 
-void handle_ls(const std::string& argument)
+void handle_ls(std::string& argument)
 {
+  // Remove leading '-1' or any other flags before the actual path.
+    // We remove '-1' or any numeric flags like '-n'
+    size_t pos = 0;
+    
+    // Skip leading spaces or non-path flags like '-1' or '-'
+    while (pos < argument.size() && (argument[pos] == '-' || std::isspace(argument[pos]))) {
+        pos++;
+    }
+
+    // Check if the next characters form a valid numeric or flag-like pattern.
+    if (pos < argument.size() && std::isdigit(argument[pos])) {
+        // Remove any leading number if followed by a space or path separator
+        while (pos < argument.size() && std::isdigit(argument[pos])) {
+            pos++;
+        }
+    }
+    
+    // Now the string should have the remaining part of the path.
+  argument = argument.substr(pos);
+  argument=trim(argument);
   if(argument.empty())
   {
     for(const auto& entry: std::filesystem::directory_iterator(WORKING_DIRECTORY))
@@ -585,6 +605,7 @@ int main()
     if (pos < input.size()) {
         argument = input.substr(pos);
     }
+    
 
     int redirection_index = detect_redirection(argument);
     if(redirection_index !=-1)
