@@ -458,9 +458,70 @@ int detect_redirection(const std::string& argument)
   return -1;
 }
 
+void handle_redirection(const std::string& op, std::string file_name)
+{
+  std::string tmp_file_name="";
+  if(file_name.empty())
+  {
+    return;
+  }
+  //handle quoted file name
+  if(file_name[0]== '\'' || file_name[0] =='\"')
+  {
+    std::vector<std::string> file_tokens = handle_quoting(file_name);
+    
+    for(const auto& token: file_tokens)
+    {
+      tmp_file_name+=token;
+    }
+    file_name = tmp_file_name;
+  }
+  //handle non quoted backslah in file name
+  else if(file_name.find('\\')!= std::string::npos)
+  {
+    file_name = handle_non_quoted_backslash(file_name);
+  }
+
+  if(op == ">" || op == "1>")
+  {
+    std::ofstream file(file_name);
+    if(file.is_open())
+    std::cout.rdbuf(file.rdbuf());
+    else
+    std::cerr<<file_name<<": No such file or directory\n";
+  }
+  else if(op == ">>" || op == "1>>")
+  {
+    std::ofstream file(file_name,std::ios::app);
+    if(file.is_open())
+    std::cout.rdbuf(file.rdbuf());
+    else
+    std::cerr<<file_name<<": No such file or directory\n";
+  }
+  else if(op == "2>")
+  {
+    std::ofstream file(file_name);
+    if(file.is_open())
+    std::cerr.rdbuf(file.rdbuf());
+    else
+    std::cerr<<file_name<<": No such file or directory\n";
+  }
+  else if(op == "2>>")
+  {
+    std::ofstream file(file_name,std::ios::app);
+    if(file.is_open())
+    std::cerr.rdbuf(file.rdbuf());
+    else
+    std::cerr<<file_name<<": No such file or directory\n";
+
+  }
+}
+
 
 int main()
 {
+  std::streambuf* originalCoutBuffer = std::cout.rdbuf();
+  std::streambuf* originalCerrBuffer = std::cerr.rdbuf();
   
   // Flush after every std::cout / std:cerr
   std::cout << std::unitbuf;
@@ -523,6 +584,32 @@ int main()
     // Collect the argument (if there's anything left)
     if (pos < input.size()) {
         argument = input.substr(pos);
+    }
+    int redirection_index = detect_redirection(argument);
+    if(redirection_index !=-1)
+    {
+      int start=redirection_index;
+      int end=redirection_index;
+      std::string op= std::to_string(argument[redirection_index]);
+      std::string arg="";
+      std::string file_name="";
+      if(argument[redirection_index-1]=='1' || argument[redirection_index-1]=='2')
+      {
+        op = "";
+        start = redirection_index-1;
+        op = op + argument[start] + argument[redirection_index];
+      }
+      if(argument[redirection_index+1]=='>')
+      {
+        end = redirection_index+1;
+        op = op + argument[redirection_index+1];
+      }
+      arg = argument.substr(0,start);
+      file_name = argument.substr(end+1);
+      arg = trim(arg);
+      file_name = trim(file_name);
+      argument = arg;
+      handle_redirection(op,file_name);
     }
     
    
@@ -639,5 +726,7 @@ int main()
         std::cerr<< programm_name << ": not found\n";
       }
     }
+    std::cout.rdbuf(originalCoutBuffer);
+    std::cerr.rdbuf(originalCerrBuffer);
   }
 }
