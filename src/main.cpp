@@ -354,6 +354,10 @@ void handle_cat(const std::string& argument)
           
 
         }
+        else
+        {
+          std::cerr<<path<<": No such file or directory\n";
+        }
        
 
       }
@@ -381,6 +385,9 @@ void handle_cat(const std::string& argument)
           
           
 
+        }
+        else{
+          std::cerr<<path<<": No such file or directory\n";
         }
        
 
@@ -500,7 +507,7 @@ int main()
          std::vector<std::string> tokens = handle_quoting(argument);
          if(tokens.size()==0)
          {
-          std::cout<<argument<<": syntax error\n";
+          std::cerr<<argument<<": syntax error\n";
          }
          else
          {
@@ -542,7 +549,7 @@ int main()
         }
         else
         {
-          std::cout << argument << ": not found\n";
+          std::cerr << argument << ": not found\n";
         }
       }
 
@@ -561,7 +568,7 @@ int main()
       }
       else
       {
-        std::cout<<argument<<": No such file or directory\n";
+        std::cerr<<argument<<": No such file or directory\n";
       }
       
 
@@ -596,7 +603,7 @@ int main()
       }
       else
       {
-        std::cout << programm_name << ": not found\n";
+        std::cerr<< programm_name << ": not found\n";
       }
     }
   }
