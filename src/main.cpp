@@ -329,9 +329,10 @@ std::string handle_non_quoted_backslash(const std::string& argument)
 void handle_cat(const std::string& argument)
 {
   if(!argument.empty()){
+      std::vector<std::string>  file_paths;
       if(argument[0] == '\'' || argument[0] == '\"')
       {
-      std::vector<std::string> file_paths = handle_quoting(argument);
+      file_paths = handle_quoting(argument);
       for(const auto& path : file_paths)
       {
         if(path!= " " && is_path_exist(path))
@@ -359,9 +360,15 @@ void handle_cat(const std::string& argument)
       }
       else
       {
-        if(argument!= " " && is_path_exist(argument))
+        file_paths = split(argument,' ');
+        for(const auto& path : file_paths)
+      {
+        if(path!= " " && is_path_exist(path))
         {
-          std::ifstream file(argument);
+          
+
+          std::ifstream file(path);
+
           if(file.is_open()){
           std::string line;
           while(std::getline(file,line))
@@ -370,7 +377,14 @@ void handle_cat(const std::string& argument)
           }
           file.close();
           }
+          
+          
+          
+
         }
+       
+
+      }
   }
   std::cout<<std::endl;
 }
