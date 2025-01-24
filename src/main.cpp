@@ -398,12 +398,10 @@ void handle_cat(const std::string& argument)
 }
 }
 
-#include <vector>
-#include <algorithm>
-#include <filesystem>
+
 
 void handle_ls(std::string& argument) {
-    // Remove flags and trim the argument
+    // 1. Remove flags like '-1' and trim whitespace
     size_t pos = 0;
     while (pos < argument.size() && (argument[pos] == '-' || std::isspace(argument[pos]))) {
         pos++;
@@ -414,34 +412,28 @@ void handle_ls(std::string& argument) {
         }
     }
     argument = argument.substr(pos);
-    argument = trim(argument);
+    argument = trim(argument); // Ensure you have a proper trim() function
 
-    if (argument.empty()) {
-        // List WORKING_DIRECTORY entries (sorted)
+    // 2. Resolve the directory path
+    std::filesystem::path target_dir = argument.empty() ? WORKING_DIRECTORY  : std::filesystem::path(argument);
+
+    // 3. List directory entries (sorted)
+    if (is_path_exist(target_dir.string()) && std::filesystem::is_directory(target_dir)) {
         std::vector<std::string> entries;
-        for (const auto& entry : std::filesystem::directory_iterator(WORKING_DIRECTORY)) {
+        for (const auto& entry : std::filesystem::directory_iterator(target_dir)) {
             entries.push_back(entry.path().filename().string());
         }
-        std::sort(entries.begin(), entries.end());
+        std::sort(entries.begin(), entries.end()); // Alphabetical sort
+        
         for (const auto& entry : entries) {
-            std::cout << entry << std::endl; // Print ALL sorted entries
+            std::cout << entry << std::endl; // One entry per line
         }
-    } else {
-        if (is_path_exist(argument) && std::filesystem::is_directory(argument)) {
-            // List target directory entries (sorted)
-            std::vector<std::string> entries;
-            for (const auto& entry : std::filesystem::directory_iterator(argument)) {
-                entries.push_back(entry.path().filename().string());
-            }
-            std::sort(entries.begin(), entries.end());
-            for (const auto& entry : entries) {
-                std::cout << entry << std::endl; // Print ALL sorted entries
-            }
-        } else if (is_path_exist(argument) && std::filesystem::is_regular_file(argument)) {
-            std::cout << argument << std::endl;
-        } else {
-            std::cerr << "ls: cannot access '" << argument << "': No such file or directory" << std::endl;
-        }
+    } 
+    else if (is_path_exist(target_dir.string()) && std::filesystem::is_regular_file(target_dir)) {
+        std::cout << target_dir.filename().string() << std::endl;
+    } 
+    else {
+        std::cerr << "ls: cannot access '" << argument << "': No such file or directory" << std::endl;
     }
 }
 
