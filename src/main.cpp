@@ -432,18 +432,18 @@ void handle_ls(std::string& argument)
     {
       for(const auto& entry: std::filesystem::directory_iterator(argument))
       {
-        std::cout<<entry.path().filename().string();
+        std::cout<<entry.path().filename().string()<<std::endl;
       
       }
     }
     else if(is_path_exist(argument) && std::filesystem::is_regular_file(argument))
     {
-       std::cout << argument << "\n";
+       std::cout << argument <<std::endl;
     }
     
     else
     {
-      std::cerr<<"ls: cannot access "<<"'"<<argument<<"'"<<": No such file or directory\n";
+      std::cerr<<"ls: cannot access "<<"'"<<argument<<"'"<<": No such file or directory"<<std::endl;
     }
   }
 }
@@ -748,12 +748,12 @@ std::streambuf* cerr_original_buf = std::cerr.rdbuf();
     {
       handle_cat(argument);
     }
-    /*
+    
     else if(command == "ls" || command == "ls:")
     {
       handle_ls(argument);
     }
-    */
+    
     else
     {
       if(command[0] == '\'' || command[0] == '\"')
