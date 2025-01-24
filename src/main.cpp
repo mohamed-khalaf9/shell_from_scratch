@@ -748,10 +748,12 @@ std::streambuf* cerr_original_buf = std::cerr.rdbuf();
     {
       handle_cat(argument);
     }
+    /*
     else if(command == "ls" || command == "ls:")
     {
       handle_ls(argument);
     }
+    */
     else
     {
       if(command[0] == '\'' || command[0] == '\"')
