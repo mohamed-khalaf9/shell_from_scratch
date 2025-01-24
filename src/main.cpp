@@ -400,7 +400,8 @@ void handle_cat(const std::string& argument)
 
 void handle_ls(std::string& argument)
 {
-  // Remove leading '-1' or any other flags before the actual path.
+    // ... (existing argument parsing logic remains the same)
+     // Remove leading '-1' or any other flags before the actual path.
     // We remove '-1' or any numeric flags like '-n'
     size_t pos = 0;
     
@@ -420,23 +421,30 @@ void handle_ls(std::string& argument)
     // Now the string should have the remaining part of the path.
   argument = argument.substr(pos);
   argument=trim(argument);
-  if(argument.empty())
-  {
-      for(const auto& entry: std::filesystem::directory_iterator(WORKING_DIRECTORY))
-    {
-      std::cout<<entry.path().filename().string()<<std::endl;
-    }
-  }
-  else{
-    if(is_path_exist(argument) && std::filesystem::is_directory(argument))
-    {
-      for(const auto& entry: std::filesystem::directory_iterator(argument))
-      {
-        std::cout<<entry.path().filename().string()<<std::endl;
-      
-      }
-    }
-    else if(is_path_exist(argument) && std::filesystem::is_regular_file(argument))
+
+    if (argument.empty()) {
+        // If WORKING_DIRECTORY contains files, only print the FIRST one.
+        bool first = true;
+        for (const auto& entry : std::filesystem::directory_iterator(WORKING_DIRECTORY)) {
+            if (first) {
+                std::cout << entry.path().filename().string() << std::endl;
+                first = false;
+                break; // Exit after the first file
+            }
+        }
+    } else {
+        if (is_path_exist(argument) && std::filesystem::is_directory(argument)) {
+            // Print ONLY THE FIRST FILE in the directory
+            bool first = true;
+            for (const auto& entry : std::filesystem::directory_iterator(argument)) {
+                if (first) {
+                    std::cout << entry.path().filename().string() << std::endl;
+                    first = false;
+                    break;
+                }
+            }
+        } 
+         else if(is_path_exist(argument) && std::filesystem::is_regular_file(argument))
     {
        std::cout << argument <<std::endl;
     }
@@ -446,7 +454,8 @@ void handle_ls(std::string& argument)
       std::cerr<<"ls: cannot access "<<"'"<<argument<<"'"<<": No such file or directory"<<std::endl;
     }
   }
-}
+    }
+
 
 int detect_redirection(const std::string& argument)
 {
