@@ -346,7 +346,7 @@ void handle_cat(const std::string& argument)
           std::string line;
           while(std::getline(file,line))
           {
-            std::cout<<line;
+            std::cout<<line<<std::endl;
           }
           file.close();
           }
@@ -378,7 +378,7 @@ void handle_cat(const std::string& argument)
           std::string line;
           while(std::getline(file,line))
           {
-            std::cout<<line;
+            std::cout<<line<<std::endl;
           }
           file.close();
           }
