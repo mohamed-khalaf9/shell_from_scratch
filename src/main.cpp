@@ -334,6 +334,11 @@ void handle_cat(const std::string& argument)
       if(argument[0] == '\'' || argument[0] == '\"')
       {
       file_paths = handle_quoting(argument);
+      bool append_new_line = false;
+      if(file_paths.size()==1)
+      { 
+        append_new_line = true;
+      }
       for(const auto& path : file_paths)
       {
         if(path == " " || path == "")
@@ -350,7 +355,12 @@ void handle_cat(const std::string& argument)
           std::string line;
           while(std::getline(file,line))
           {
-            std::cout<<line<<std::endl;
+            std::cout<<line;
+            if(append_new_line)
+            {
+              std::cout<<std::endl;
+              
+            }
           }
           file.close();
           }
@@ -370,6 +380,12 @@ void handle_cat(const std::string& argument)
       else
       {
         file_paths = split(argument,' ');
+        bool append_new_line = false;
+      if(file_paths.size()==1)
+      { 
+        append_new_line = true;
+      
+      }
         for(const auto& path : file_paths)
       {
         if(path==" " || path=="")
@@ -386,7 +402,13 @@ void handle_cat(const std::string& argument)
           std::string line;
           while(std::getline(file,line))
           {
-            std::cout<<line<<std::endl;
+            std::cout<<line;
+            if(append_new_line)
+            {
+              std::cout<<std::endl;
+              
+              
+            }
           }
           file.close();
           }
