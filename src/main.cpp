@@ -415,10 +415,10 @@ void handle_ls(std::string& argument) {
     argument = trim(argument); // Ensure you have a proper trim() function
 
     // 2. Resolve the directory path
-    std::filesystem::path target_dir = argument.empty() ? WORKING_DIRECTORY  : std::filesystem::path(argument);
+    std::string target_dir = argument.empty() ? WORKING_DIRECTORY  : argument;
 
     // 3. List directory entries (sorted)
-    if (is_path_exist(target_dir.string()) && std::filesystem::is_directory(target_dir)) {
+    if (is_path_exist(target_dir) && std::filesystem::is_directory(target_dir)) {
         std::vector<std::string> entries;
         for (const auto& entry : std::filesystem::directory_iterator(target_dir)) {
             entries.push_back(entry.path().filename().string());
@@ -429,8 +429,8 @@ void handle_ls(std::string& argument) {
             std::cout << entry << std::endl; // One entry per line
         }
     } 
-    else if (is_path_exist(target_dir.string()) && std::filesystem::is_regular_file(target_dir)) {
-        std::cout << target_dir.filename().string() << std::endl;
+    else if (is_path_exist(target_dir) && std::filesystem::is_regular_file(target_dir)) {
+        std::cout << target_dir<< std::endl;
     } 
     else {
         std::cerr << "ls: cannot access '" << argument << "': No such file or directory" << std::endl;
