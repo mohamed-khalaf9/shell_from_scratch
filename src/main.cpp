@@ -401,7 +401,7 @@ void handle_cat(const std::string& argument)
 
 
 void handle_ls(std::string& argument) {
-    // 1. Remove flags like '-1' and trim whitespace
+    // Remove flags like '-1' and trim whitespace
     size_t pos = 0;
     while (pos < argument.size() && (argument[pos] == '-' || std::isspace(argument[pos]))) {
         pos++;
@@ -412,12 +412,12 @@ void handle_ls(std::string& argument) {
         }
     }
     argument = argument.substr(pos);
-    argument = trim(argument); // Ensure you have a proper trim() function
+    argument = trim(argument); // Ensure trim() removes whitespace properly
 
-    // 2. Resolve the directory path
-    std::string target_dir = argument.empty() ? WORKING_DIRECTORY  : argument;
+    // Resolve the directory path
+    std::string target_dir = argument.empty() ? WORKING_DIRECTORY : argument;
 
-    // 3. List directory entries (sorted)
+    // List directory entries (sorted)
     if (is_path_exist(target_dir) && std::filesystem::is_directory(target_dir)) {
         std::vector<std::string> entries;
         for (const auto& entry : std::filesystem::directory_iterator(target_dir)) {
@@ -426,13 +426,11 @@ void handle_ls(std::string& argument) {
         std::sort(entries.begin(), entries.end()); // Alphabetical sort
         
         for (const auto& entry : entries) {
-            std::cout << entry << std::endl; // One entry per line
+            std::cout << entry << std::endl; // Ensure each entry is on a new line
         }
-    } 
-    else if (is_path_exist(target_dir) && std::filesystem::is_regular_file(target_dir)) {
-        std::cout << target_dir<< std::endl;
-    } 
-    else {
+    } else if (is_path_exist(target_dir) && std::filesystem::is_regular_file(target_dir)) {
+        std::cout << target_dir << std::endl;
+    } else {
         std::cerr << "ls: cannot access '" << argument << "': No such file or directory" << std::endl;
     }
 }
