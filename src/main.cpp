@@ -394,7 +394,7 @@ void handle_cat(const std::string& argument)
 
       }
   }
-  std::cout<<std::endl;
+ 
 }
 }
 
