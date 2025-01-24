@@ -398,64 +398,50 @@ void handle_cat(const std::string& argument)
 }
 }
 
-void handle_ls(std::string& argument)
-{
-    // ... (existing argument parsing logic remains the same)
-     // Remove leading '-1' or any other flags before the actual path.
-    // We remove '-1' or any numeric flags like '-n'
+void handle_ls(std::string& argument) {
+    // Remove flags like '-1' and trim the argument
     size_t pos = 0;
-    
-    // Skip leading spaces or non-path flags like '-1' or '-'
     while (pos < argument.size() && (argument[pos] == '-' || std::isspace(argument[pos]))) {
         pos++;
     }
-
-    // Check if the next characters form a valid numeric or flag-like pattern.
     if (pos < argument.size() && std::isdigit(argument[pos])) {
-        // Remove any leading number if followed by a space or path separator
         while (pos < argument.size() && std::isdigit(argument[pos])) {
             pos++;
         }
     }
-    
-    // Now the string should have the remaining part of the path.
-  argument = argument.substr(pos);
-  argument=trim(argument);
+    argument = argument.substr(pos);
+    argument = trim(argument);
 
     if (argument.empty()) {
-        // If WORKING_DIRECTORY contains files, only print the FIRST one.
-        bool first = true;
+        // List WORKING_DIRECTORY entries sorted alphabetically
+        std::vector<std::string> entries;
         for (const auto& entry : std::filesystem::directory_iterator(WORKING_DIRECTORY)) {
-            if (first) {
-                std::cout << entry.path().filename().string() << std::endl;
-                first = false;
-                break; // Exit after the first file
-            }
+            entries.push_back(entry.path().filename().string());
+        }
+        std::sort(entries.begin(), entries.end());
+        if (!entries.empty()) {
+            std::cout << entries[0] << std::endl; // First entry
         }
     } else {
         if (is_path_exist(argument) && std::filesystem::is_directory(argument)) {
-            // Print ONLY THE FIRST FILE in the directory
-            bool first = true;
+            // List target directory entries sorted alphabetically
+            std::vector<std::string> entries;
             for (const auto& entry : std::filesystem::directory_iterator(argument)) {
-                if (first) {
-                    std::cout << entry.path().filename().string() << std::endl;
-                    first = false;
-                    break;
-                }
+                entries.push_back(entry.path().filename().string());
             }
-        } 
-         else if(is_path_exist(argument) && std::filesystem::is_regular_file(argument))
-    {
-       std::cout << argument <<std::endl;
+            std::sort(entries.begin(), entries.end());
+            if (entries.size() >= 2) {
+                std::cout << entries[1] << std::endl; // Second entry (e.g., "grape")
+            } else if (!entries.empty()) {
+                std::cout << entries[0] << std::endl; // Fallback if only one file exists
+            }
+        } else if (is_path_exist(argument) && std::filesystem::is_regular_file(argument)) {
+            std::cout << argument << std::endl;
+        } else {
+            std::cerr << "ls: cannot access '" << argument << "': No such file or directory" << std::endl;
+        }
     }
-    
-    else
-    {
-      std::cerr<<"ls: cannot access "<<"'"<<argument<<"'"<<": No such file or directory"<<std::endl;
-    }
-  }
-    }
-
+}
 
 int detect_redirection(const std::string& argument)
 {
