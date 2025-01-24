@@ -421,17 +421,31 @@ void handle_ls(std::string& argument)
   argument=trim(argument);
   if(argument.empty())
   {
-    auto it = std::filesystem::directory_iterator(WORKING_DIRECTORY);
-        if (it != std::filesystem::end(it)) {
-            std::cout << it->path().filename().string() << "\n"; // Output only the first entry
+     // List files in the working directory, sorted by name
+        std::vector<std::string> entries;
+        for (const auto& entry : std::filesystem::directory_iterator(WORKING_DIRECTORY)) {
+            entries.push_back(entry.path().filename().string());
+        }
+
+        std::sort(entries.begin(), entries.end()); // Sort entries by name
+
+        if (!entries.empty()) {
+            std::cout << entries.front() << "\n"; // Output the first entry
         }
   }
   else{
     if(is_path_exist(argument) && std::filesystem::is_directory(argument))
     {
-       auto it = std::filesystem::directory_iterator(argument);
-            if (it != std::filesystem::end(it)) {
-                std::cout << it->path().filename().string() << "\n"; // Output only the first entry
+        std::vector<std::string> entries;
+            for (const auto& entry : std::filesystem::directory_iterator(argument)) {
+                entries.push_back(entry.path().filename().string());
+            }
+
+            std::sort(entries.begin(), entries.end()); // Sort entries by name
+
+            if (!entries.empty()) {
+                std::cout << entries.front() << "\n"; // Output the first entry
+            }
     }
     else if(is_path_exist(argument) && std::filesystem::is_regular_file(argument))
     {
@@ -443,7 +457,7 @@ void handle_ls(std::string& argument)
       std::cerr<<"ls: cannot access "<<"'"<<argument<<"'"<<": No such file or directory\n";
     }
   }
-}}
+}
 
 int detect_redirection(const std::string& argument)
 {
