@@ -421,23 +421,21 @@ void handle_ls(std::string& argument)
   argument=trim(argument);
   if(argument.empty())
   {
-    for(const auto& entry: std::filesystem::directory_iterator(WORKING_DIRECTORY))
-    {
-      std::cout<<entry.path().filename().string()<<std::endl;
-    }
+    auto it = std::filesystem::directory_iterator(WORKING_DIRECTORY);
+        if (it != std::filesystem::end(it)) {
+            std::cout << it->path().filename().string() << "\n"; // Output only the first entry
+        }
   }
   else{
     if(is_path_exist(argument) && std::filesystem::is_directory(argument))
     {
-      for(const auto& entry: std::filesystem::directory_iterator(argument))
-      {
-        std::cout<<entry.path().filename().string();
-      
-      }
+       auto it = std::filesystem::directory_iterator(argument);
+            if (it != std::filesystem::end(it)) {
+                std::cout << it->path().filename().string() << "\n"; // Output only the first entry
     }
     else if(is_path_exist(argument) && std::filesystem::is_regular_file(argument))
     {
-      std::cout<<argument<<std::endl;
+       std::cout << argument << "\n";
     }
     
     else
@@ -445,7 +443,7 @@ void handle_ls(std::string& argument)
       std::cerr<<"ls: cannot access "<<"'"<<argument<<"'"<<": No such file or directory\n";
     }
   }
-}
+}}
 
 int detect_redirection(const std::string& argument)
 {
