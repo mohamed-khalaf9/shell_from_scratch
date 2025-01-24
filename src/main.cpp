@@ -398,8 +398,12 @@ void handle_cat(const std::string& argument)
 }
 }
 
+#include <vector>
+#include <algorithm>
+#include <filesystem>
+
 void handle_ls(std::string& argument) {
-    // Remove flags like '-1' and trim the argument
+    // Remove flags and trim the argument
     size_t pos = 0;
     while (pos < argument.size() && (argument[pos] == '-' || std::isspace(argument[pos]))) {
         pos++;
@@ -413,27 +417,25 @@ void handle_ls(std::string& argument) {
     argument = trim(argument);
 
     if (argument.empty()) {
-        // List WORKING_DIRECTORY entries sorted alphabetically
+        // List WORKING_DIRECTORY entries (sorted)
         std::vector<std::string> entries;
         for (const auto& entry : std::filesystem::directory_iterator(WORKING_DIRECTORY)) {
             entries.push_back(entry.path().filename().string());
         }
         std::sort(entries.begin(), entries.end());
-        if (!entries.empty()) {
-            std::cout << entries[0] << std::endl; // First entry
+        for (const auto& entry : entries) {
+            std::cout << entry << std::endl; // Print ALL sorted entries
         }
     } else {
         if (is_path_exist(argument) && std::filesystem::is_directory(argument)) {
-            // List target directory entries sorted alphabetically
+            // List target directory entries (sorted)
             std::vector<std::string> entries;
             for (const auto& entry : std::filesystem::directory_iterator(argument)) {
                 entries.push_back(entry.path().filename().string());
             }
             std::sort(entries.begin(), entries.end());
-            if (entries.size() >= 2) {
-                std::cout << entries[1] << std::endl; // Second entry (e.g., "grape")
-            } else if (!entries.empty()) {
-                std::cout << entries[0] << std::endl; // Fallback if only one file exists
+            for (const auto& entry : entries) {
+                std::cout << entry << std::endl; // Print ALL sorted entries
             }
         } else if (is_path_exist(argument) && std::filesystem::is_regular_file(argument)) {
             std::cout << argument << std::endl;
