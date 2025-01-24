@@ -372,6 +372,10 @@ void handle_cat(const std::string& argument)
         file_paths = split(argument,' ');
         for(const auto& path : file_paths)
       {
+        if(path==" " || path=="")
+        {
+          continue;
+        }
         if(path!= " " && path!="" && is_path_exist(path))
         {
           
