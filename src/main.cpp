@@ -468,7 +468,7 @@ void handle_ls(std::string& argument) {
         std::cout<< target_dir << std::endl;
         
     } else {
-        std::cerr << "ls: cannot access '" << argument << "': No such file or directory" << std::endl;
+        std::cerr << "ls: " << argument << ": No such file or directory" << std::endl;
     }
 }
 
