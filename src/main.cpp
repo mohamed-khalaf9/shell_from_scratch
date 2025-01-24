@@ -426,12 +426,11 @@ void handle_ls(std::string& argument) {
         std::sort(entries.begin(), entries.end()); // Alphabetical sort
         
         for (const auto& entry : entries) {
-            file << entry << std::endl;
-            file<<std::endl; // Ensure each entry is on a new line
+            std::cout<< entry << std::endl; // Ensure each entry is on a new line
         }
     } else if (is_path_exist(target_dir) && std::filesystem::is_regular_file(target_dir)) {
-        file << target_dir << std::endl;
-        file<<std::endl;
+        std::cout<< target_dir << std::endl;
+        
     } else {
         std::cerr << "ls: cannot access '" << argument << "': No such file or directory" << std::endl;
     }
