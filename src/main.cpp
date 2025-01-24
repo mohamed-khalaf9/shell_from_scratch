@@ -436,6 +436,7 @@ if(!append_new_line)
 
 void handle_ls(std::string& argument) {
     // Remove flags like '-1' and trim whitespace
+    if(argument[0]=='-'){
     size_t pos = 0;
     while (pos < argument.size() && (argument[pos] == '-' || std::isspace(argument[pos]))) {
         pos++;
@@ -445,7 +446,8 @@ void handle_ls(std::string& argument) {
             pos++;
         }
     }
-    argument = argument.substr(pos);
+    argument = argument.substr(pos);}
+
     argument = trim(argument); // Ensure trim() removes whitespace properly
 
     // Resolve the directory path
