@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <stack>
 #include <fstream>
+#include <algorithm>
 
 
 std::string WORKING_DIRECTORY = std::filesystem::current_path().string();
