@@ -435,6 +435,26 @@ void handle_ls(std::string& argument)
         }
   }
   else{
+
+     std::vector<std::string> file_paths = split(argument,' ');
+        for(const auto& path : file_paths)
+      {
+        if(path!= " " && is_path_exist(path))
+        {
+          
+
+          std::ifstream file(path);
+
+          if(file.is_open()){
+          std::string line;
+          while(std::getline(file,line))
+          {
+            std::cout<<line;
+          }
+          file.close();
+          }}
+          return;
+          }
     if(is_path_exist(argument) && std::filesystem::is_directory(argument))
     {
         std::vector<std::string> entries;
