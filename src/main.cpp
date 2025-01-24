@@ -432,7 +432,7 @@ void handle_ls(std::string& argument)
       for(const auto& entry: std::filesystem::directory_iterator(argument))
       {
         std::cout<<entry.path().filename().string();
-        break;
+      
       }
     }
     else if(is_path_exist(argument) && std::filesystem::is_regular_file(argument))
