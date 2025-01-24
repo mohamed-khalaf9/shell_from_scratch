@@ -329,12 +329,13 @@ std::string handle_non_quoted_backslash(const std::string& argument)
 
 void handle_cat(const std::string& argument)
 {
+  bool append_new_line = false;
   if(!argument.empty()){
       std::vector<std::string>  file_paths;
       if(argument[0] == '\'' || argument[0] == '\"')
       {
       file_paths = handle_quoting(argument);
-      bool append_new_line = false;
+      
       if(file_paths.size()==1)
       { 
         append_new_line = true;
@@ -380,7 +381,6 @@ void handle_cat(const std::string& argument)
       else
       {
         file_paths = split(argument,' ');
-        bool append_new_line = false;
       if(file_paths.size()==1)
       { 
         append_new_line = true;
@@ -425,6 +425,10 @@ void handle_cat(const std::string& argument)
       }
   }
  
+}
+if(!append_new_line)
+{
+  std::cout<<std::endl;
 }
 }
 
