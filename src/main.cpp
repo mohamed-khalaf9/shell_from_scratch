@@ -422,51 +422,19 @@ void handle_ls(std::string& argument)
   argument=trim(argument);
   if(argument.empty())
   {
-     // List files in the working directory, sorted by name
-        std::vector<std::string> entries;
-        for (const auto& entry : std::filesystem::directory_iterator(WORKING_DIRECTORY)) {
-            entries.push_back(entry.path().filename().string());
-        }
-
-        std::sort(entries.begin(), entries.end()); // Sort entries by name
-
-        if (!entries.empty()) {
-            std::cout << entries.front() << "\n"; // Output the first entry
-        }
+      for(const auto& entry: std::filesystem::directory_iterator(WORKING_DIRECTORY))
+    {
+      std::cout<<entry.path().filename().string()<<std::endl;
+    }
   }
   else{
-
-     std::vector<std::string> file_paths = split(argument,' ');
-        for(const auto& path : file_paths)
-      {
-        if(path!= " " && is_path_exist(path))
-        {
-          
-
-          std::ifstream file(path);
-
-          if(file.is_open()){
-          std::string line;
-          while(std::getline(file,line))
-          {
-            std::cout<<line;
-          }
-          file.close();
-          }}
-          return;
-          }
     if(is_path_exist(argument) && std::filesystem::is_directory(argument))
     {
-        std::vector<std::string> entries;
-            for (const auto& entry : std::filesystem::directory_iterator(argument)) {
-                entries.push_back(entry.path().filename().string());
-            }
-
-            std::sort(entries.begin(), entries.end()); // Sort entries by name
-
-            if (!entries.empty()) {
-                std::cout << entries.front() << "\n"; // Output the first entry
-            }
+      for(const auto& entry: std::filesystem::directory_iterator(argument))
+      {
+        std::cout<<entry.path().filename().string();
+      
+      }
     }
     else if(is_path_exist(argument) && std::filesystem::is_regular_file(argument))
     {
@@ -539,7 +507,7 @@ std::pair<std::string,std::streambuf*> handle_redirection(const std::string& op,
 
   if(op == ">" || op == "1>")
   {
-    file.open(file_name);
+    file.open(file_name,std::ios::trunc);
     if(file.is_open()){
     return {"cout",file.rdbuf()};
 
@@ -558,7 +526,7 @@ std::pair<std::string,std::streambuf*> handle_redirection(const std::string& op,
   }
   else if(op == "2>")
   {
-    file.open(file_name);
+    file.open(file_name,std::ios::trunc);
     if(file.is_open())
     return {"cerr",file.rdbuf()};
     else
@@ -687,6 +655,7 @@ std::streambuf* cerr_original_buf = std::cerr.rdbuf();
         std::cerr.rdbuf(p.second);
       }
     }
+    
    
     
     
