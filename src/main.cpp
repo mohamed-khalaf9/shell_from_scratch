@@ -625,6 +625,21 @@ public:
     }
 };
 
+void autocomplete(std::string& input, Trie& trie)
+{
+  std::vector<std::string> suggestions = trie.searchPrefix(input);
+  if(suggestions.size()==0)
+  { 
+    return;
+  }
+  if(suggestions.size()==1)
+  {
+    input = suggestions[0]+" ";
+    std::cout<<"\r$"<<input<<"    ";
+    std::flush(std::cout);
+  }
+}
+
 int main()
 {
  
@@ -651,11 +666,33 @@ trie.insert("exit");
   commands.emplace("ls","is /usr/bin/ls");
 
   // Uncomment this block to pass the first stage
-  std::string input;
+  std::string input="";
 
   while (true)
   {
     std::cout << "$ ";
+
+    while(true)
+    {
+      char ch = std::getchar();
+      if(ch=='\n') break;
+      else if(ch=='\t') 
+      {
+        autocomplete(input,trie);
+        break;
+      }
+      else if(ch==127 || ch=='\b')
+      {
+
+      }
+      else
+      {
+        input+=ch;
+        std::cout<<ch;
+      }
+    }
+    input="";
+    continue;
     
 
     std::string command;
