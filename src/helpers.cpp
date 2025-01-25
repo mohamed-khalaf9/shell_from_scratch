@@ -514,3 +514,18 @@ std::string remove_last_token_from_working_directory(const std::string &workingD
     return updatedDirectory;  // Return the updated directory
 }
 
+std::string remove_extra_spaces(const std::string& str) {
+    std::stringstream ss(str);
+    std::string word, result;
+
+    // Read each word and append with a single space
+    while (ss >> word) {
+        if (!result.empty()) {
+            result += " ";
+        }
+        result += word;
+    }
+
+    return result;
+}
+

@@ -352,6 +352,7 @@ void execute_Programm(std::string& command, std::string& argument)
 
 void run()
 {
+
 std::streambuf* cout_original_buf = std::cout.rdbuf(); 
 std::streambuf* cerr_original_buf = std::cerr.rdbuf(); 
 
@@ -468,7 +469,7 @@ add_executables_to_trie(trie);
     {
       execute_Programm(command,argument);
     }
-    
+
     std::cout.rdbuf(cout_original_buf);
     std::cerr.rdbuf(cerr_original_buf);
     file.close();
