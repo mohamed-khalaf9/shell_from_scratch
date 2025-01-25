@@ -1,4 +1,5 @@
 #include "helpers.h"
+#include "globals.h"
 
 
 
@@ -448,4 +449,26 @@ std::pair<std::string,std::streambuf*> handle_redirection(const std::string& op,
   }
   return {"cout",std::cout.rdbuf()};
 
+}
+
+std::string is_executable_file_exists_in_path(const std::string &file_name)
+{
+  const char *path = std::getenv("PATH");
+  if (path)
+  {
+
+    std::vector<std::string> dirs = split(path, ':');
+
+    for (const auto &dir : dirs)
+    {
+      std::string full_path = dir + "/" + file_name;
+      if (std::filesystem::exists(full_path))
+      {
+        return full_path;
+      }
+    }
+    return "";
+  }
+  else
+    return "";
 }
