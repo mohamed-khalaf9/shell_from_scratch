@@ -639,6 +639,7 @@ void autocomplete(std::string& input, Trie& trie)
     input = suggestions[0]+" ";
     
     std::cout<<"\r$ "<<input;
+    std::cout.flush();
     
     
   }
