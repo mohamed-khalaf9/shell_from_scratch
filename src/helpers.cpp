@@ -569,3 +569,27 @@ bool change_directory(const std::string& path){
   }
 
 }
+
+std::tuple<std::string, std::string, std::string> parse_redirection(const std::string& argument, int redirection_index) {
+    int start = redirection_index;
+    int end = redirection_index;
+    std::string op = std::string(1, argument[redirection_index]);
+    std::string arg = "";
+    std::string file_name = "";
+
+    if (argument[redirection_index - 1] == '1' || argument[redirection_index - 1] == '2') {
+        op = "";
+        start = redirection_index - 1;
+        op = op + argument[start] + argument[redirection_index];
+    }
+    if (argument[redirection_index + 1] == '>') {
+        end = redirection_index + 1;
+        op = op + argument[redirection_index + 1];
+    }
+    arg = argument.substr(0, start);
+    file_name = argument.substr(end + 1);
+    arg = trim(arg);
+    file_name = trim(file_name);
+
+    return std::make_tuple(arg, op, file_name);
+}
