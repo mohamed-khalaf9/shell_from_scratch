@@ -695,6 +695,21 @@ std::string parse_input_with_autocomplete(std::string& input,Trie& trie,bool fir
 
 }
 
+void add_executables_to_trie(Trie& trie) 
+{
+    const char* path = std::getenv("PATH");
+    if (path) {
+        std::vector<std::string> dirs = split(path, ':');
+        for (const auto& dir : dirs) {
+            for (const auto& entry : std::filesystem::directory_iterator(dir)) {
+                if (entry.is_regular_file() && entry.path().filename().string() != "shell") {
+                    trie.insert(entry.path().filename().string());
+                }
+            }
+        }
+    }
+}
+
 int main()
 {
  
@@ -711,7 +726,7 @@ trie.insert("cd");
 trie.insert("cat");
 trie.insert("ls");
 
-
+add_executables_to_trie(trie);
   
   
  
