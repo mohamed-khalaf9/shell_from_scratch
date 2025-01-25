@@ -632,7 +632,8 @@ void autocomplete(std::string& input, Trie& trie)
   std::vector<std::string> suggestions = trie.searchPrefix(input);
   if(suggestions.size()==0)
   { 
-    return;
+    std::cout<<"\r$ "<<input;
+    std::cout<<"\a";
   }
   if(suggestions.size()==1)
   {
