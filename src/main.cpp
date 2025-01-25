@@ -689,7 +689,7 @@ trie.insert("exit");
       else if(ch=='\t') 
       {
         autocomplete(input,trie);
-        break;
+        
       }
       else if(ch==127 || ch=='\b')
       {
