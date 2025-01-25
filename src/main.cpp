@@ -646,40 +646,9 @@ void autocomplete(std::string& input, Trie& trie)
   }
 }
 
-int main()
+std::string parse_input_with_autocomplete(std::string& input,Trie& trie,bool first_time = true)
 {
- 
-std::streambuf* cout_original_buf = std::cout.rdbuf(); 
-std::streambuf* cerr_original_buf = std::cerr.rdbuf(); 
-
-
-Trie trie;
-trie.insert("echo");
-trie.insert("exit");
-
-  
-  
- 
-
-  // shell commands and descriptions
-  std::unordered_map<std::string, std::string> commands;
-  commands.emplace("type", "is a shell builtin");
-  commands.emplace("echo", "is a shell builtin");
-  commands.emplace("exit", "is a shell builtin");
-  commands.emplace("pwd", "is a shell builtin");
-  commands.emplace("cd", "is a shell builtin");
-  commands.emplace("cat", "is /usr/bin/cat");
-  commands.emplace("ls","is /usr/bin/ls");
-
-  // Uncomment this block to pass the first stage
-  std::string input="";
-
-  while (true)
-  {
-    std::cout << "$ ";
-    input.clear();
-
-    while(true)
+   while(true)
     {
 
       if(_kbhit())
@@ -714,11 +683,45 @@ trie.insert("exit");
     
 
       }
-      
-      
-    std::cout<<std::endl;
-    
-    continue;
+      return input;
+  
+
+}
+
+int main()
+{
+ 
+std::streambuf* cout_original_buf = std::cout.rdbuf(); 
+std::streambuf* cerr_original_buf = std::cerr.rdbuf(); 
+
+
+Trie trie;
+trie.insert("echo");
+trie.insert("exit");
+
+  
+  
+ 
+
+  // shell commands and descriptions
+  std::unordered_map<std::string, std::string> commands;
+  commands.emplace("type", "is a shell builtin");
+  commands.emplace("echo", "is a shell builtin");
+  commands.emplace("exit", "is a shell builtin");
+  commands.emplace("pwd", "is a shell builtin");
+  commands.emplace("cd", "is a shell builtin");
+  commands.emplace("cat", "is /usr/bin/cat");
+  commands.emplace("ls","is /usr/bin/ls");
+
+  // Uncomment this block to pass the first stage
+  std::string input="";
+
+  while (true)
+  {
+    std::cout << "$ ";
+    input.clear();
+
+    input = parse_input_with_autocomplete(input,trie);
     
 
     std::string command;
