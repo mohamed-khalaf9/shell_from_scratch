@@ -291,6 +291,10 @@ void handle_type(std::string& argument, std::unordered_map<std::string,std::stri
 
 }
 
+void handle_pwd()
+{
+  std::cout << WORKING_DIRECTORY << std::endl;
+}
 
 
 
@@ -394,7 +398,7 @@ add_executables_to_trie(trie);
       
     }
     else if(command=="pwd" || command=="pwd:"){
-      std::cout<<WORKING_DIRECTORY<<std::endl;
+      handle_pwd();
     }
     else if(command=="cd" || command=="cd:"){
       argument = trim(argument);
