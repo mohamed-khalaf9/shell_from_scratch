@@ -634,9 +634,14 @@ void autocomplete(std::string& input, Trie& trie)
   }
   if(suggestions.size()==1)
   {
+    std::string original = input;
     input = suggestions[0]+" ";
-    std::cout<<"\r$"<<input<<"    ";
-    std::flush(std::cout);
+    std::cout<<"\r$"<<input;
+    int spacesNeeded = static_cast<int>(original.length()) - static_cast<int>(input.length());
+    if (spacesNeeded > 0) {
+            std::cout << std::string(spacesNeeded, ' ');
+        }
+        std::cout.flush();
   }
 }
 
@@ -671,11 +676,15 @@ trie.insert("exit");
   while (true)
   {
     std::cout << "$ ";
+    input.clear();
 
     while(true)
     {
       char ch = std::getchar();
-      if(ch=='\n') break;
+      if(ch=='\n')
+      {
+        break;
+      }
       else if(ch=='\t') 
       {
         autocomplete(input,trie);
@@ -690,8 +699,9 @@ trie.insert("exit");
         input+=ch;
         std::cout<<ch;
       }
+      std::cout.flush();
     }
-    input="";
+    
     continue;
     
 
