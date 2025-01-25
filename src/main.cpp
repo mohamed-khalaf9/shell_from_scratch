@@ -698,6 +698,12 @@ std::streambuf* cerr_original_buf = std::cerr.rdbuf();
 Trie trie;
 trie.insert("echo");
 trie.insert("exit");
+trie.insert("type");
+trie.insert("pwd");
+trie.insert("cd");
+trie.insert("cat");
+trie.insert("ls");
+
 
   
   
