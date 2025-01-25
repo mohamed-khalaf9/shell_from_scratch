@@ -381,3 +381,71 @@ int detect_redirection(const std::string& argument)
   }
   return -1;
 }
+
+std::pair<std::string,std::streambuf*> handle_redirection(const std::string& op, std::string file_name)
+{
+  std::string tmp_file_name="";
+  if(file_name.empty())
+  {
+    return {"cout",std::cout.rdbuf()}; // set redirection to defualt output
+  }
+  //handle quoted file name
+  if(file_name[0]== '\'' || file_name[0] =='\"')
+  {
+    std::vector<std::string> file_tokens = handle_quoting(file_name);
+    
+    for(const auto& token: file_tokens)
+    {
+      tmp_file_name+=token;
+    }
+    file_name = tmp_file_name;
+  }
+  //handle non quoted backslah in file name
+  else if(file_name.find('\\')!= std::string::npos)
+  {
+    file_name = handle_non_quoted_backslash(file_name);
+  }
+
+  if(op == ">" || op == "1>")
+  {
+    file.open(file_name,std::ios::trunc);
+    if(file.is_open()){
+    return {"cout",file.rdbuf()};
+
+    }
+    else{
+    std::cerr<<file_name<<": No such file or directory\n";}
+  }
+  else if(op == ">>" || op == "1>>")
+  {
+  file.open(file_name,std::ios::app);
+  if(file.is_open()){
+    return {"cout",file.rdbuf()};
+    }
+    else
+    std::cerr<<file_name<<": No such file or directory\n";
+  }
+  else if(op == "2>")
+  {
+    file.open(file_name,std::ios::trunc);
+    if(file.is_open())
+    return {"cerr",file.rdbuf()};
+    else
+    std::cerr<<file_name<<": No such file or directory\n";
+  }
+  else if(op == "2>>")
+  {
+    file.open(file_name,std::ios::app);
+    if(file.is_open())
+    return {"cerr",file.rdbuf()};
+    else
+    std::cerr<<file_name<<": No such file or directory\n";
+
+  }
+  else
+  {
+    return {"cout",std::cout.rdbuf()};
+  }
+  return {"cout",std::cout.rdbuf()};
+
+}
