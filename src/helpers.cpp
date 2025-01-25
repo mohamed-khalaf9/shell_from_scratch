@@ -529,3 +529,43 @@ std::string remove_extra_spaces(const std::string& str) {
     return result;
 }
 
+bool change_directory(const std::string& path){
+  std::string trimmed_path = trim(path);
+  if(trimmed_path == "~")
+  {
+    WORKING_DIRECTORY = std::getenv("HOME");
+    return true;
+  }
+  std::vector<std::string> path_tokens = split(trimmed_path,'/');
+
+  if(path_tokens.size()==0)
+  {
+    return false;
+  }
+  else if(path_tokens[0] == "." || path_tokens[0] == "..")
+  {
+    //handel relative path
+    if(handle_relative_path(path_tokens))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+
+  }  
+  else
+  {
+  if(is_path_exist(trimmed_path))
+  {
+
+    WORKING_DIRECTORY = path;
+    return true;
+
+  }
+  else
+  return false;
+  }
+
+}
