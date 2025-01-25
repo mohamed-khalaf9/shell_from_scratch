@@ -726,10 +726,9 @@ void add_executables_to_trie(Trie& trie)
     }
 }
 
-int main()
+void run()
 {
- 
-std::streambuf* cout_original_buf = std::cout.rdbuf(); 
+  std::streambuf* cout_original_buf = std::cout.rdbuf(); 
 std::streambuf* cerr_original_buf = std::cerr.rdbuf(); 
 
 
@@ -975,4 +974,14 @@ add_executables_to_trie(trie);
     
 
   }
+
+
+}
+
+int main()
+{
+  
+  run();
+  return 0;
+
 }
