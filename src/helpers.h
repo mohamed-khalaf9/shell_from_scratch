@@ -27,6 +27,7 @@ std::string trim(const std::string &str);
 int detect_redirection(const std::string& argument);
 std::pair<std::string,std::streambuf*> handle_redirection(const std::string& op, std::string file_name);
 std::string is_executable_file_exists_in_path(const std::string &file_name);
+bool handle_relative_path(std::vector<std::string>& path_tokens);
 
 
 #endif
