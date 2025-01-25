@@ -310,12 +310,49 @@ void handle_cd(std::string& argument)
       
 }
 
+void execute_Programm(std::string& command, std::string& argument)
+{
+  // exectue programm 
+      std::string programm_name;
+      
+      if(command[0] == '\'' || command[0] == '\"')
+      {
+        std::vector<std::string> tokens = handle_quoting(command);
+        for(const auto& token: tokens)
+        {
+          programm_name+=token;
+        }
+      }
+      else if (command.find('\\') != std::string::npos)
+      {
+        programm_name = handle_non_quoted_backslash(command);
+      }
+      else
+      {
+        programm_name = command;
+      }
 
+      std::string programm_argument = argument;
+
+      // check if programm is an executable file
+      std::string full_path = is_executable_file_exists_in_path(programm_name);
+      if (full_path != "")
+      {
+
+        std::string command = programm_name + " " + programm_argument;
+        system(command.c_str());
+      }
+      else
+      {
+        std::cerr<< programm_name << ": not found\n";
+      }
+
+}
 
 
 void run()
 {
-  std::streambuf* cout_original_buf = std::cout.rdbuf(); 
+std::streambuf* cout_original_buf = std::cout.rdbuf(); 
 std::streambuf* cerr_original_buf = std::cerr.rdbuf(); 
 
 
@@ -427,32 +464,11 @@ add_executables_to_trie(trie);
     {
       handle_ls(argument);
     }
-    
     else
     {
-      if(command[0] == '\'' || command[0] == '\"')
-      {
-        handle_cat(argument);
-        continue;
-      }
-
-      // exectue programm 
-      std::string programm_name = command;
-      std::string programm_argument = argument;
-
-      // check if programm is an executable file
-      std::string full_path = is_executable_file_exists_in_path(programm_name);
-      if (full_path != "")
-      {
-
-        std::string command = programm_name + " " + programm_argument;
-        system(command.c_str());
-      }
-      else
-      {
-        std::cerr<< programm_name << ": not found\n";
-      }
+      execute_Programm(command,argument);
     }
+    
     std::cout.rdbuf(cout_original_buf);
     std::cerr.rdbuf(cerr_original_buf);
     file.close();
@@ -465,10 +481,9 @@ add_executables_to_trie(trie);
 
 int main()
 {
-  
-  
 
   run();
+
   return 0;
 
 }
