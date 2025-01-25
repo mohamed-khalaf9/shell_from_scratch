@@ -16,6 +16,7 @@ void autocomplete(std::string& input, Trie& trie);
 void add_executables_to_trie(Trie& trie);
 std::vector<std::string> split(const std::string &s, char delimiter);
 bool is_path_exist(const std::string& path);
+std::pair<std::string,std::string> fetch_command_and_argument(const std::string& input);
 
 
 #endif
