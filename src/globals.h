@@ -7,7 +7,7 @@
 #include <fstream>
 
 
-std::string WORKING_DIRECTORY = std::filesystem::current_path().string();
+std::string WORKING_DIRECTORY;
 std::ofstream file; // for redirection
 
 #endif
