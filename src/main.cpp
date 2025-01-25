@@ -632,7 +632,9 @@ std::streambuf* cout_original_buf = std::cout.rdbuf();
 std::streambuf* cerr_original_buf = std::cerr.rdbuf(); 
 
 
-
+Trie trie;
+trie.insert("echo");
+trie.insert("exit");
 
   
   
@@ -654,8 +656,7 @@ std::streambuf* cerr_original_buf = std::cerr.rdbuf();
   while (true)
   {
     std::cout << "$ ";
-    std::getline(std::cin, input);
-    std::stringstream ss(input);
+    
 
     std::string command;
     std::string argument;
