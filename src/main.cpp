@@ -12,88 +12,23 @@
 #include <algorithm>
 #include <conio.h>
 #include "helpers.h"
+#include "globals.h"
 
 
 
 
-std::string WORKING_DIRECTORY = std::filesystem::current_path().string();
-std::ofstream file; // for redirection
-
-std::string trim(const std::string &str) {
-    size_t first = str.find_first_not_of(" ");
-    size_t last = str.find_last_not_of(" ");
-    return (first == std::string::npos || last == std::string::npos)
-               ? ""
-               : str.substr(first, last - first + 1);
-}
-
-
-
-std::string is_executable_file_exists_in_path(const std::string &file_name)
-{
-  const char *path = std::getenv("PATH");
-  if (path)
-  {
-
-    std::vector<std::string> dirs = split(path, ':');
-
-    for (const auto &dir : dirs)
-    {
-      std::string full_path = dir + "/" + file_name;
-      if (std::filesystem::exists(full_path))
-      {
-        return full_path;
-      }
-    }
-    return "";
-  }
-  else
-    return "";
-}
-
-std::string remove_last_token_from_working_directory(const std::string &workingDirectory) {
-    std::string updatedDirectory = workingDirectory;  // Make a copy
-
-    // Find the position of the last '/'
-    std::size_t pos = updatedDirectory.find_last_of('/');
-
-    // If '/' is found and it's not the only character (e.g., root '/')
-    if (pos != std::string::npos && pos > 0) {
-        // Erase everything from the last '/' to the end
-        updatedDirectory.erase(pos);
-    } else if (pos == 0) {
-        // If we are at the root '/', set it to "/"
-        updatedDirectory = "/";
-    }
-
-    return updatedDirectory;  // Return the updated directory
-}
 
 
 
 
-  bool handle_relative_path(std::vector<std::string>& path_tokens) {
-    for (const auto& token : path_tokens) {
-        if (token == "..") {
-            // Move up one level: pop the last directory from WORKING_DIRECTORY
-            if (!WORKING_DIRECTORY.empty()) {
-                size_t pos = WORKING_DIRECTORY.find_last_of('/');
-                if (pos != std::string::npos) {
-                    WORKING_DIRECTORY = WORKING_DIRECTORY.substr(0, pos);
-                }
-            }
-        } else if (token != "." && token != "") {
-            // For any other valid directory name, add it to WORKING_DIRECTORY
-            if (WORKING_DIRECTORY.back() != '/') {
-                WORKING_DIRECTORY += '/';
-            }
-            WORKING_DIRECTORY += token;
-        }
-    }
 
-    // After handling all tokens, ensure the path is valid
-    return is_path_exist(WORKING_DIRECTORY);
-}
+
+
+
+
+
+
+  
 
 bool change_directory(const std::string& path){
   std::string trimmed_path = trim(path);
@@ -135,187 +70,13 @@ bool change_directory(const std::string& path){
   }
 
 }
-std::vector<std::string> handle_double_quotes(const std::string& argument){
-  std::stack<char> qoutes;
-  std::vector<std::string> tokens;
-  std::string token = "";
-  bool inside_quotes = false;
-  bool escape = false;
-  bool prev_space = false;
-
-   for(int i=0 ; i<(int)argument.size(); i++)
-    {
-      char c = argument[i];
-      
-      if(qoutes.empty() && c=='\"' && !escape){
-        prev_space = false;
-        if(token!="")
-        {
-          tokens.push_back(token);
-          token.clear();
-        }
-        qoutes.push(c);
-        inside_quotes = true;
-        continue;
-      }
-
-      else if(!qoutes.empty() && c=='\"' && qoutes.top()=='\"' && !escape)
-      {
-        qoutes.pop();
-        tokens.push_back(token);
-        token.clear();
-        inside_quotes = false;
-        continue;
-      }
-      else if(c=='\\' && !escape && ((i+1<(int)argument.size())&& (argument[i+1]=='\"' || argument[i+1]=='\\' || argument[i+1]=='$')))
-      {
-        escape = true;
-        continue;
-      }
-      else if(c=='\\' && !escape)
-      {
-        token+=c;
-        continue;
-      }
-      else if(c=='\\' || c=='$' || c=='\"'  && escape)
-      {
-       
-          token +=c;
-          escape = false;
-          continue;
-        // for future handling of specail characters using else
-
-      }
-        // Handle spaces outside quotes (normalize them to one space)
-        else if (isspace(c) && !inside_quotes) {
-            if (!prev_space) { // Only add one space if the previous character wasn't a space
-                if (!token.empty()) {
-                    tokens.push_back(token);
-                    token.clear();
-                }
-                token += " "; // Add exactly one space
-                prev_space = true; // Set the flag to indicate a space has been added
-            }
-            continue;
-    }
-            prev_space = false;
-            token += c;
-            
-        
-        
-    }
-    tokens.push_back(token);
-    
-    if(!qoutes.empty())
-    {
-      tokens.clear();
-      return tokens;
-    }
 
 
-    return tokens;
-
-    }
-std::vector<std::string> handle_single_qoutes(const std::string & argument)
-{
-  std::stack<char> qoutes;
-  std::vector<std::string> tokens;
-  std::string token = "";
-  bool inside_qoutes = false;
-
-   for(auto c: argument)
-    {
-      if(qoutes.empty() && c=='\''){
-        if(token!="")
-        {
-          tokens.push_back(token);
-          token.clear();
-        }
-        qoutes.push(c);
-        inside_qoutes = true;
-        continue;
-      }
-
-      else if(!qoutes.empty() && c=='\'' && qoutes.top()=='\'')
-      {
-        qoutes.pop();
-        tokens.push_back(token);
-        token.clear();
-        inside_qoutes = false;
-        continue;
-      }
-      else
-      {
-       token += c;
-      }
-
-  
-
-    }
-        if(!qoutes.empty())
-    {
-      tokens.clear();
-      return tokens;
-    }
 
 
-    return tokens;
-  
-  
 
-}
 
-std::vector<std::string> handle_quoting(std::string argument)
-{
-  std::vector<std::string> tokens;
 
-  // handel single qoutes
-  if(argument[0]=='\'')
-  {
-    tokens = handle_single_qoutes(argument);
-    return tokens;
-  }
-  else if(argument[0]=='\"')
-  {
-    tokens = handle_double_quotes(argument);
-    return tokens;
-  }
-  else
-  return tokens;
-}
-std::string remove_extra_spaces(const std::string& str) {
-    std::stringstream ss(str);
-    std::string word, result;
-
-    // Read each word and append with a single space
-    while (ss >> word) {
-        if (!result.empty()) {
-            result += " ";
-        }
-        result += word;
-    }
-
-    return result;
-}
-
-std::string handle_non_quoted_backslash(const std::string& argument)
-{
-  std::string res="";
-  if(argument.find('\\') != std::string::npos && argument[0] != '\'' && argument[0]!='\"' )
-  {
-    for(const auto& c: argument)
-    {
-      if(c=='\\')
-      continue;
-      
-      res+=c;
-    }
-    return res;
-  }
-  else
-  return argument;
-
-}
 
 void handle_cat(const std::string& argument)
 {
@@ -462,106 +223,9 @@ void handle_ls(std::string& argument) {
     }
 }
 
-int detect_redirection(const std::string& argument)
-{
-  bool inside_single_quotes = false;
-  bool inside_double_quotes = false;
-  bool escape = false;
 
-  for(int i=0; i<(int)argument.size(); i++)
-  {
-    char c = argument[i];
-    if(c=='\"' && !escape)
-    {
-      inside_double_quotes = !inside_double_quotes;
-    }
-    if(c=='\'' && !escape)
-    {
-      inside_single_quotes = !inside_single_quotes;
-    }
-    if(c=='\\' && !escape)
-    {
-      escape = true;
-    }
-    if(c!='\\' && escape)
-    {
-      escape = false;
-    }
-    if(c=='>' && !inside_double_quotes && !inside_single_quotes && !escape)
-    {
-      return i;
-    }
-  }
-  return -1;
-}
 
-std::pair<std::string,std::streambuf*> handle_redirection(const std::string& op, std::string file_name)
-{
-  std::string tmp_file_name="";
-  if(file_name.empty())
-  {
-    return {"cout",std::cout.rdbuf()}; // set redirection to defualt output
-  }
-  //handle quoted file name
-  if(file_name[0]== '\'' || file_name[0] =='\"')
-  {
-    std::vector<std::string> file_tokens = handle_quoting(file_name);
-    
-    for(const auto& token: file_tokens)
-    {
-      tmp_file_name+=token;
-    }
-    file_name = tmp_file_name;
-  }
-  //handle non quoted backslah in file name
-  else if(file_name.find('\\')!= std::string::npos)
-  {
-    file_name = handle_non_quoted_backslash(file_name);
-  }
 
-  if(op == ">" || op == "1>")
-  {
-    file.open(file_name,std::ios::trunc);
-    if(file.is_open()){
-    return {"cout",file.rdbuf()};
-
-    }
-    else{
-    std::cerr<<file_name<<": No such file or directory\n";}
-  }
-  else if(op == ">>" || op == "1>>")
-  {
-  file.open(file_name,std::ios::app);
-  if(file.is_open()){
-    return {"cout",file.rdbuf()};
-    }
-    else
-    std::cerr<<file_name<<": No such file or directory\n";
-  }
-  else if(op == "2>")
-  {
-    file.open(file_name,std::ios::trunc);
-    if(file.is_open())
-    return {"cerr",file.rdbuf()};
-    else
-    std::cerr<<file_name<<": No such file or directory\n";
-  }
-  else if(op == "2>>")
-  {
-    file.open(file_name,std::ios::app);
-    if(file.is_open())
-    return {"cerr",file.rdbuf()};
-    else
-    std::cerr<<file_name<<": No such file or directory\n";
-
-  }
-  else
-  {
-    return {"cout",std::cout.rdbuf()};
-  }
-  return {"cout",std::cout.rdbuf()};
-
-}
 
 void handle_echo(std::string& argument)
 {
@@ -599,6 +263,33 @@ void handle_echo(std::string& argument)
 
 }
 
+void handle_type(std::string& argument, std::unordered_map<std::string,std::string>& commands)
+{
+  argument = trim(argument);
+  
+      if(!argument.empty())
+      {
+        if (commands.count(argument))
+        {
+        std::cout << argument << " " << commands[argument] << std::endl;
+        }
+      else
+      {
+        // check if this is an executable file
+        std::string full_path = is_executable_file_exists_in_path(argument);
+        if (full_path != "")
+        {
+          std::cout << argument << " is " << full_path << std::endl;
+        }
+        else
+        {
+          std::cerr << argument << ": not found\n";
+        }
+      }
+
+      }
+
+}
 
 
 
@@ -625,14 +316,8 @@ add_executables_to_trie(trie);
  
 
   // shell commands and descriptions
-  std::unordered_map<std::string, std::string> commands;
-  commands.emplace("type", "is a shell builtin");
-  commands.emplace("echo", "is a shell builtin");
-  commands.emplace("exit", "is a shell builtin");
-  commands.emplace("pwd", "is a shell builtin");
-  commands.emplace("cd", "is a shell builtin");
-  commands.emplace("cat", "is /usr/bin/cat");
-  commands.emplace("ls","is /usr/bin/ls");
+  std::unordered_map<std::string, std::string> commands = load_commands();
+  
 
  
   std::string input="";
@@ -704,30 +389,8 @@ add_executables_to_trie(trie);
     }
     else if (command == "type" || command == "type:")
     {
-      argument = trim(argument);
 
-      if(!argument.empty())
-      {
-        if (commands.count(argument))
-        {
-        std::cout << argument << " " << commands[argument] << std::endl;
-        }
-      else
-      {
-        // check if this is an executable file
-        std::string full_path = is_executable_file_exists_in_path(argument);
-        if (full_path != "")
-        {
-          std::cout << argument << " is " << full_path << std::endl;
-        }
-        else
-        {
-          std::cerr << argument << ": not found\n";
-        }
-      }
-
-      }
-
+      handle_type(argument,commands);
       
     }
     else if(command=="pwd" || command=="pwd:"){
