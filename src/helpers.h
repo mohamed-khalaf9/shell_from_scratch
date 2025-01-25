@@ -26,6 +26,7 @@ std::unordered_map<std::string,std::string> load_commands();
 std::string trim(const std::string &str);
 int detect_redirection(const std::string& argument);
 std::pair<std::string,std::streambuf*> handle_redirection(const std::string& op, std::string file_name);
+std::string is_executable_file_exists_in_path(const std::string &file_name);
 
 
 #endif
