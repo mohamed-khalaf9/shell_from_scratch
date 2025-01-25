@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <string>
 #include <stdio.h>
@@ -10,6 +11,8 @@
 #include <fstream>
 #include <algorithm>
 #include <conio.h>
+#include "helpers.h"
+
 
 
 
@@ -571,6 +574,7 @@ std::pair<std::string,std::streambuf*> handle_redirection(const std::string& op,
   {
     return {"cout",std::cout.rdbuf()};
   }
+  return {"cout",std::cout.rdbuf()};
 
 }
 
@@ -981,6 +985,8 @@ add_executables_to_trie(trie);
 int main()
 {
   
+  
+
   run();
   return 0;
 
