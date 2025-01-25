@@ -54,3 +54,4 @@ vcpkg.json
 codecrafters.yml
 README.md
 .codecrafters
+./.vscode
