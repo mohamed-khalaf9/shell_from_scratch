@@ -645,6 +645,17 @@ void autocomplete(std::string& input, Trie& trie)
     
     
   }
+  if(suggestions.size()>1)
+  {
+    std::cout<<std::endl;
+    for(const auto& suggestion: suggestions)
+    {
+      
+      std::cout<<suggestion<<std::endl;
+    }
+    input.clear();
+    std::cout<<"$ ";
+  }
 }
 
 std::string parse_input_with_autocomplete(std::string& input,Trie& trie,bool first_time = true)
@@ -699,11 +710,16 @@ void add_executables_to_trie(Trie& trie)
 {
     const char* path = std::getenv("PATH");
     if (path) {
-        std::vector<std::string> dirs = split(path, ':');
+        std::vector<std::string> dirs = split(path, ';');
         for (const auto& dir : dirs) {
+            if(dir.empty() || !is_path_exist(dir))
+            {
+              continue;
+            }
             for (const auto& entry : std::filesystem::directory_iterator(dir)) {
                 if (entry.is_regular_file() && entry.path().filename().string() != "shell") {
                     trie.insert(entry.path().filename().string());
+                    
                 }
             }
         }
@@ -727,7 +743,7 @@ trie.insert("cat");
 trie.insert("ls");
 
 add_executables_to_trie(trie);
-  
+
   
  
 
