@@ -27,19 +27,7 @@ std::string trim(const std::string &str) {
                : str.substr(first, last - first + 1);
 }
 
-std::vector<std::string> split(const std::string &s, char delimiter)
-{
-  std::vector<std::string> tokens;
-  std::string token;
-  std::stringstream ss(s);
 
-  while (std::getline(ss, token, delimiter))
-  {
-    tokens.push_back(token);
-  }
-
-  return tokens;
-}
 
 std::string is_executable_file_exists_in_path(const std::string &file_name)
 {
@@ -62,10 +50,7 @@ std::string is_executable_file_exists_in_path(const std::string &file_name)
   else
     return "";
 }
-bool is_path_exist(const std::string& path)
-{
-  return std::filesystem::exists(path);
-}
+
 std::string remove_last_token_from_working_directory(const std::string &workingDirectory) {
     std::string updatedDirectory = workingDirectory;  // Make a copy
 
@@ -578,157 +563,46 @@ std::pair<std::string,std::streambuf*> handle_redirection(const std::string& op,
 
 }
 
-struct TrieNode {
-    std::unordered_map<char, TrieNode*> children; 
-    bool isEndOfWord = false; 
-};
-
-class Trie {
-private:
-    TrieNode* root;
-
-    
-    void collectSuggestions(TrieNode* node, std::string prefix, std::vector<std::string>& suggestions) {
-        if (node->isEndOfWord) {
-            suggestions.push_back(prefix);
-        }
-        for (auto& child : node->children) {
-            collectSuggestions(child.second, prefix + child.first, suggestions);
-        }
-    }
-
-public:
-    Trie() {
-        root = new TrieNode();
-    }
-
-    
-    void insert(const std::string& word) {
-        TrieNode* current = root;
-        for (char ch : word) {
-            if (current->children.find(ch) == current->children.end()) {
-                current->children[ch] = new TrieNode();
-            }
-            current = current->children[ch];
-        }
-        current->isEndOfWord = true;
-    }
-
-    
-    std::vector<std::string> searchPrefix(const std::string& prefix) {
-        TrieNode* current = root;
-        for (char ch : prefix) {
-            if (current->children.find(ch) == current->children.end()) {
-                return {}; 
-            }
-            current = current->children[ch];
-        }
-
-        
-        std::vector<std::string> suggestions;
-        collectSuggestions(current, prefix, suggestions);
-        return suggestions;
-    }
-};
-
-void autocomplete(std::string& input, Trie& trie)
+void handle_echo(std::string& argument)
 {
-  std::vector<std::string> suggestions = trie.searchPrefix(input);
-  if(suggestions.size()==0)
-  { 
-    std::cout<<"\r$ "<<input;
-    std::cout<<"\a";
-  }
-  if(suggestions.size()==1)
-  {
-    
-    input = suggestions[0]+" ";
-    
-    std::cout<<"\r$ "<<input;
-    
-    
-    
-  }
-  if(suggestions.size()>1)
-  {
-    std::cout<<std::endl;
-    for(const auto& suggestion: suggestions)
-    {
-      
-      std::cout<<suggestion<<std::endl;
-    }
-    input.clear();
-    std::cout<<"$ ";
-  }
-}
-
-std::string parse_input_with_autocomplete(std::string& input,Trie& trie,bool first_time = true)
-{
-   while(true)
-    {
-
-     
-        char ch = _getch();
-
-      if(ch=='\n' || ch==13)
+  if (!argument.empty())
       {
-        std::cout<<std::endl;
-        return input;
-        
-        
-      }
-      else if(ch=='\t'|| ch==9) 
-      {
-        autocomplete(input,trie);
-        
-        
-      }
-      else if(ch==127 || ch=='\b')
-      {
-        if(!input.empty())
+        if(argument[0] == '\'' || argument[0] == '\"')
         {
-          input.pop_back();
-          std::cout<<"\b \b";
+         std::vector<std::string> tokens = handle_quoting(argument);
+         if(tokens.size()==0)
+         {
+          std::cerr<<argument<<": syntax error\n";
+         }
+         else
+         {
+          for(const auto& token: tokens)
+          {
+            std::cout<<token;
+          }
+          std::cout<<std::endl;
+         }
         }
-
+        // handle backslach in non quoted arguments for echo command
+        else if(argument.find('\\') != std::string::npos)
+        {
+          
+          std::cout<<handle_non_quoted_backslash(argument)<<std::endl;
+        }
+        else
+        {
+          
+          std::string res = remove_extra_spaces(argument);
+          std::cout << res << "\n";
+        }
       }
-      else
-      {
-        input+=ch;
-        std::cout<<ch;
-      }
-
-      }
-      
-      
-      
-    
-
-      
-      return input;
-  
 
 }
 
-void add_executables_to_trie(Trie& trie) 
-{
-    const char* path = std::getenv("PATH");
-    if (path) {
-        std::vector<std::string> dirs = split(path, ';');
-        for (const auto& dir : dirs) {
-            if(dir.empty() || !is_path_exist(dir))
-            {
-              continue;
-            }
-            for (const auto& entry : std::filesystem::directory_iterator(dir)) {
-                if (entry.is_regular_file() && entry.path().filename().string() != "shell") {
-                    trie.insert(entry.path().filename().string());
-                    
-                }
-            }
-        }
-    }
-}
+
+
+
+
 
 void run()
 {
@@ -760,7 +634,7 @@ add_executables_to_trie(trie);
   commands.emplace("cat", "is /usr/bin/cat");
   commands.emplace("ls","is /usr/bin/ls");
 
-  // Uncomment this block to pass the first stage
+ 
   std::string input="";
 
   while (true)
@@ -775,43 +649,9 @@ add_executables_to_trie(trie);
     std::string command;
     std::string argument;
 
-       size_t pos = 0;
-
-    // Skip leading spaces
-    while (pos < input.size() && std::isspace(input[pos])) {
-        ++pos;
-    }
-
-    // Check if the command is quoted
-    if (input[pos] == '\'' || input[pos] == '\"') {
-        char quote_char = input[pos]; // Store which quote we're using (single or double)
-        command += input[pos++]; // Include the opening quote in the command
-
-        // Collect the entire quoted string (including spaces inside the quotes)
-        while (pos < input.size() && input[pos] != quote_char) {
-            command += input[pos++];
-        }
-
-        if (pos < input.size()) {
-            command += input[pos++]; // Include the closing quote in the command
-        }
-    } else {
-        // Collect the command until we hit a space (no quotes involved)
-        while (pos < input.size() && !std::isspace(input[pos])) {
-            command += input[pos++];
-        }
-    }
-
-    // Skip the spaces after the command to collect the argument
-    while (pos < input.size() && std::isspace(input[pos])) {
-        ++pos;
-    }
-
-    // Collect the argument (if there's anything left)
-    if (pos < input.size()) {
-        argument = input.substr(pos);
-    }
-    
+    std::pair<std::string,std::string> p = fetch_command_and_argument(input);
+    command = p.first;
+    argument = p.second;
 
     int redirection_index = detect_redirection(argument);
     if(redirection_index !=-1)
@@ -847,7 +687,7 @@ add_executables_to_trie(trie);
         std::cerr.rdbuf(p.second);
       }
     }
-    
+  
    
     
     
@@ -860,38 +700,7 @@ add_executables_to_trie(trie);
     }
     else if (command == "echo" || command == "echo:")
     {
-     
-      if (!argument.empty())
-      {
-        if(argument[0] == '\'' || argument[0] == '\"')
-        {
-         std::vector<std::string> tokens = handle_quoting(argument);
-         if(tokens.size()==0)
-         {
-          std::cerr<<argument<<": syntax error\n";
-         }
-         else
-         {
-          for(const auto& token: tokens)
-          {
-            std::cout<<token;
-          }
-          std::cout<<std::endl;
-         }
-        }
-        // handle backslach in non quoted arguments for echo command
-        else if(argument.find('\\') != std::string::npos)
-        {
-          
-          std::cout<<handle_non_quoted_backslash(argument)<<std::endl;
-        }
-        else
-        {
-          
-          std::string res = remove_extra_spaces(argument);
-          std::cout << res << "\n";
-        }
-      }
+      handle_echo(argument);
     }
     else if (command == "type" || command == "type:")
     {
