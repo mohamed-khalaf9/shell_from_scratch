@@ -162,20 +162,6 @@ std::pair<std::string,std::string> fetch_command_and_argument(const std::string&
     return {command, argument};
 
 }
-std::string remove_extra_spaces(const std::string& str) {
-    std::stringstream ss(str);
-    std::string word, result;
-
-    // Read each word and append with a single space
-    while (ss >> word) {
-        if (!result.empty()) {
-            result += " ";
-        }
-        result += word;
-    }
-
-    return result;
-}
 std::string handle_non_quoted_backslash(const std::string& argument)
 {
   std::string res="";
@@ -341,4 +327,16 @@ std::vector<std::string> handle_quoting(std::string argument)
   }
   else
   return tokens;
+}
+std::unordered_map<std::string,std::string> load_commands(){
+  std::unordered_map<std::string,std::string> commands;
+  commands.emplace("type", "is a shell builtin");
+  commands.emplace("echo", "is a shell builtin");
+  commands.emplace("exit", "is a shell builtin");
+  commands.emplace("pwd", "is a shell builtin");
+  commands.emplace("cd", "is a shell builtin");
+  commands.emplace("cat", "is /usr/bin/cat");
+  commands.emplace("ls","is /usr/bin/ls");
+
+  return commands;
 }
