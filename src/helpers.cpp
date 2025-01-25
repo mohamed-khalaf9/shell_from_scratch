@@ -472,3 +472,26 @@ std::string is_executable_file_exists_in_path(const std::string &file_name)
   else
     return "";
 }
+
+bool handle_relative_path(std::vector<std::string>& path_tokens) {
+    for (const auto& token : path_tokens) {
+        if (token == "..") {
+            // Move up one level: pop the last directory from WORKING_DIRECTORY
+            if (!WORKING_DIRECTORY.empty()) {
+                size_t pos = WORKING_DIRECTORY.find_last_of('/');
+                if (pos != std::string::npos) {
+                    WORKING_DIRECTORY = WORKING_DIRECTORY.substr(0, pos);
+                }
+            }
+        } else if (token != "." && token != "") {
+            // For any other valid directory name, add it to WORKING_DIRECTORY
+            if (WORKING_DIRECTORY.back() != '/') {
+                WORKING_DIRECTORY += '/';
+            }
+            WORKING_DIRECTORY += token;
+        }
+    }
+
+    // After handling all tokens, ensure the path is valid
+    return is_path_exist(WORKING_DIRECTORY);
+}
