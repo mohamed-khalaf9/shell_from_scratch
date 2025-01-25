@@ -22,5 +22,6 @@ std::vector<std::string> handle_single_qoutes(const std::string & argument);
 std::vector<std::string> handle_double_quotes(const std::string& argument);
 std::string handle_non_quoted_backslash(const std::string& argument);
 std::string remove_extra_spaces(const std::string& str);
+std::unordered_map<std::string,std::string> load_commands();
 
 #endif
