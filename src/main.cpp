@@ -9,6 +9,7 @@
 #include <stack>
 #include <fstream>
 #include <algorithm>
+#include <conio.h>
 
 
 
@@ -639,7 +640,7 @@ void autocomplete(std::string& input, Trie& trie)
     input = suggestions[0]+" ";
     
     std::cout<<"\r$ "<<input;
-    std::cout.flush();
+    
     
     
   }
@@ -680,8 +681,10 @@ trie.insert("exit");
 
     while(true)
     {
-      
-      char ch = std::cin.get();
+
+      if(_kbhit())
+      {
+        char ch = _getch();
 
       if(ch=='\n')
       {
@@ -703,6 +706,10 @@ trie.insert("exit");
         input+=ch;
         std::cout<<ch;
       }
+
+      }
+      
+      
       
     
 
