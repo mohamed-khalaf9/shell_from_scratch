@@ -634,14 +634,12 @@ void autocomplete(std::string& input, Trie& trie)
   }
   if(suggestions.size()==1)
   {
-    std::string original = input;
+    
     input = suggestions[0]+" ";
-    std::cout<<"\r$"<<input;
-    int spacesNeeded = static_cast<int>(original.length()) - static_cast<int>(input.length());
-    if (spacesNeeded > 0) {
-            std::cout << std::string(spacesNeeded, ' ');
-        }
-        std::cout.flush();
+    
+    std::cout<<"\r$ "<<input;
+    std::cout.flush();
+    
   }
 }
 
@@ -688,7 +686,7 @@ trie.insert("exit");
       else if(ch=='\t') 
       {
         autocomplete(input,trie);
-        break;
+        
       }
       else if(ch==127 || ch=='\b')
       {
@@ -701,6 +699,7 @@ trie.insert("exit");
       }
       std::cout.flush();
     }
+    std::cout<<std::endl;
     
     continue;
     
