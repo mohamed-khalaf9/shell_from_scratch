@@ -685,12 +685,13 @@ trie.insert("exit");
 
       if(ch=='\n')
       {
-        break;
+        std::cout<<std::endl;
+        
       }
       else if(ch=='\t') 
       {
         autocomplete(input,trie);
-        exit(0);
+        
         
       }
       else if(ch==127 || ch=='\b')
