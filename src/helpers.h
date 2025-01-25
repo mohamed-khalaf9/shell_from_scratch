@@ -29,6 +29,5 @@ std::pair<std::string,std::streambuf*> handle_redirection(const std::string& op,
 std::string is_executable_file_exists_in_path(const std::string &file_name);
 bool handle_relative_path(std::vector<std::string>& path_tokens);
 std::string remove_last_token_from_working_directory(const std::string &workingDirectory);
-
-
+bool change_directory(const std::string& path);
 #endif
