@@ -296,6 +296,20 @@ void handle_pwd()
   std::cout << WORKING_DIRECTORY << std::endl;
 }
 
+void handle_cd(std::string& argument)
+{
+   argument = trim(argument);
+      if(!argument.empty()&&change_directory(argument))
+      {
+        return;
+      }
+      else
+      {
+        std::cerr<<argument<<": No such file or directory\n";
+      }
+      
+}
+
 
 
 
@@ -401,16 +415,7 @@ add_executables_to_trie(trie);
       handle_pwd();
     }
     else if(command=="cd" || command=="cd:"){
-      argument = trim(argument);
-      if(!argument.empty()&&change_directory(argument))
-      {
-        continue;
-      }
-      else
-      {
-        std::cerr<<argument<<": No such file or directory\n";
-      }
-      
+     handle_cd(argument);
 
     }
     else if(command=="cat" || command == "cat:")
