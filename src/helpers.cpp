@@ -348,3 +348,36 @@ std::string trim(const std::string &str) {
                ? ""
                : str.substr(first, last - first + 1);
 }
+
+int detect_redirection(const std::string& argument)
+{
+  bool inside_single_quotes = false;
+  bool inside_double_quotes = false;
+  bool escape = false;
+
+  for(int i=0; i<(int)argument.size(); i++)
+  {
+    char c = argument[i];
+    if(c=='\"' && !escape)
+    {
+      inside_double_quotes = !inside_double_quotes;
+    }
+    if(c=='\'' && !escape)
+    {
+      inside_single_quotes = !inside_single_quotes;
+    }
+    if(c=='\\' && !escape)
+    {
+      escape = true;
+    }
+    if(c!='\\' && escape)
+    {
+      escape = false;
+    }
+    if(c=='>' && !inside_double_quotes && !inside_single_quotes && !escape)
+    {
+      return i;
+    }
+  }
+  return -1;
+}
