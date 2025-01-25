@@ -9,7 +9,7 @@
 #include <stack>
 #include <fstream>
 #include <algorithm>
-#include <conio.h>
+
 
 
 std::string WORKING_DIRECTORY = std::filesystem::current_path().string();
@@ -679,9 +679,8 @@ trie.insert("exit");
 
     while(true)
     {
-      if(_kbhit())
-      {
-      char ch = _getch();
+      
+      char ch = std::cin.get();
 
       if(ch=='\n')
       {
@@ -702,7 +701,7 @@ trie.insert("exit");
         std::cout<<ch;
       }
       
-    }
+    
 
       }
       
