@@ -340,3 +340,11 @@ std::unordered_map<std::string,std::string> load_commands(){
 
   return commands;
 }
+
+std::string trim(const std::string &str) {
+    size_t first = str.find_first_not_of(" ");
+    size_t last = str.find_last_not_of(" ");
+    return (first == std::string::npos || last == std::string::npos)
+               ? ""
+               : str.substr(first, last - first + 1);
+}
