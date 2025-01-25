@@ -9,6 +9,7 @@
 #include <stack>
 #include <fstream>
 #include <algorithm>
+#include <conio.h>
 
 
 std::string WORKING_DIRECTORY = std::filesystem::current_path().string();
@@ -638,7 +639,7 @@ void autocomplete(std::string& input, Trie& trie)
     input = suggestions[0]+" ";
     
     std::cout<<"\r$ "<<input;
-    std::cout.flush();
+    
     
   }
 }
@@ -678,7 +679,10 @@ trie.insert("exit");
 
     while(true)
     {
-      char ch = std::getchar();
+      if(_kbhit())
+      {
+      char ch = _getch();
+
       if(ch=='\n')
       {
         break;
@@ -686,7 +690,7 @@ trie.insert("exit");
       else if(ch=='\t') 
       {
         autocomplete(input,trie);
-        
+        break;
       }
       else if(ch==127 || ch=='\b')
       {
@@ -697,8 +701,12 @@ trie.insert("exit");
         input+=ch;
         std::cout<<ch;
       }
-      std::cout.flush();
+      
     }
+
+      }
+      
+      
     std::cout<<std::endl;
     
     continue;
