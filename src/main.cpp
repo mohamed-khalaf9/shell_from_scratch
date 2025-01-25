@@ -688,7 +688,7 @@ trie.insert("exit");
         std::cout<<std::endl;
         
       }
-      else if(ch=='\t') 
+      else if(ch=='\t'|| ch==9) 
       {
         autocomplete(input,trie);
         
