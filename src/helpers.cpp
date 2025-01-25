@@ -117,3 +117,48 @@ void add_executables_to_trie(Trie& trie)
     }
 }
 
+std::pair<std::string,std::string> fetch_command_and_argument(const std::string& input)
+{
+  std::string command;
+  std::string argument;
+  
+   size_t pos = 0;
+
+    // Skip leading spaces
+    while (pos < input.size() && std::isspace(input[pos])) {
+        ++pos;
+    }
+
+    // Check if the command is quoted
+    if (input[pos] == '\'' || input[pos] == '\"') {
+        char quote_char = input[pos]; // Store which quote we're using (single or double)
+        command += input[pos++]; // Include the opening quote in the command
+
+        // Collect the entire quoted string (including spaces inside the quotes)
+        while (pos < input.size() && input[pos] != quote_char) {
+            command += input[pos++];
+        }
+
+        if (pos < input.size()) {
+            command += input[pos++]; // Include the closing quote in the command
+        }
+    } else {
+        // Collect the command until we hit a space (no quotes involved)
+        while (pos < input.size() && !std::isspace(input[pos])) {
+            command += input[pos++];
+        }
+    }
+
+    // Skip the spaces after the command to collect the argument
+    while (pos < input.size() && std::isspace(input[pos])) {
+        ++pos;
+    }
+
+    // Collect the argument (if there's anything left)
+    if (pos < input.size()) {
+        argument = input.substr(pos);
+    }
+    
+    return {command, argument};
+
+}
