@@ -652,8 +652,7 @@ std::string parse_input_with_autocomplete(std::string& input,Trie& trie,bool fir
    while(true)
     {
 
-      if(_kbhit())
-      {
+     
         char ch = _getch();
 
       if(ch=='\n')
@@ -669,6 +668,11 @@ std::string parse_input_with_autocomplete(std::string& input,Trie& trie,bool fir
       }
       else if(ch==127 || ch=='\b')
       {
+        if(!input.empty())
+        {
+          input.pop_back();
+          std::cout<<"\b \b";
+        }
 
       }
       else
@@ -683,7 +687,7 @@ std::string parse_input_with_autocomplete(std::string& input,Trie& trie,bool fir
       
     
 
-      }
+      
       return input;
   
 
