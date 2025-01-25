@@ -655,9 +655,11 @@ std::string parse_input_with_autocomplete(std::string& input,Trie& trie,bool fir
      
         char ch = _getch();
 
-      if(ch=='\n')
+      if(ch=='\n' || ch==13)
       {
         std::cout<<std::endl;
+        return input;
+        
         
       }
       else if(ch=='\t'|| ch==9) 
@@ -733,6 +735,7 @@ trie.insert("ls");
     input.clear();
 
     input = parse_input_with_autocomplete(input,trie);
+   
     
 
     std::string command;
@@ -815,8 +818,9 @@ trie.insert("ls");
     
     
    
+    command = trim(command);
 
-    if (command == "exit")
+    if (command == "exit" )
     {
       exit(stoi(argument));
     }
