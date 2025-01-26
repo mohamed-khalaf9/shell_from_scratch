@@ -10,7 +10,6 @@
 #include <stack>
 #include <fstream>
 #include <algorithm>
-#include <conio.h>
 #include "helpers.h"
 #include "globals.h"
 

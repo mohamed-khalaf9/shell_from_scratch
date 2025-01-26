@@ -1,5 +1,29 @@
 #include "helpers.h"
 #include "globals.h"
+#include <termios.h>
+#include <unistd.h>
+
+
+char getch() {
+    struct termios oldt, newt;
+    char ch;
+
+    // Get the current terminal settings
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+
+    // Set terminal to raw mode
+    newt.c_lflag &= ~(ICANON | ECHO);  // Disable canonical mode and echoing
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
+    // Read the character
+    ch = getchar();
+
+    // Restore the original terminal settings
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+
+    return ch;
+}
 
 void autocomplete(std::string &input, Trie &trie)
 {
@@ -34,7 +58,7 @@ std::string parse_input_with_autocomplete(std::string &input, Trie &trie, bool f
     while (true)
     {
 
-        char ch = _getch();
+        char ch = getch();
 
         if (ch == '\n' || ch == 13)
         {
