@@ -199,7 +199,7 @@ void handle_echo(std::string &argument)
 void handle_type(std::string &argument, std::unordered_map<std::string, std::string> &commands)
 {
   argument = trim(argument);
-
+  
   if (!argument.empty())
   {
     if (commands.count(argument))
@@ -208,6 +208,20 @@ void handle_type(std::string &argument, std::unordered_map<std::string, std::str
     }
     else
     {
+      if(argument[0]== '\'' || argument[0] == '\"')
+      {
+        std::vector<std::string> tokens = handle_quoting(argument);
+        std::string tmp="";
+        for(const auto &token : tokens)
+        {
+          tmp+=token;
+        }
+        argument = tmp;
+      }
+      else if(argument.find('\\') != std::string::npos)
+      {
+        argument = handle_non_quoted_backslash(argument);
+      }
       // check if this is an executable file
       std::string full_path = is_executable_file_exists_in_path(argument);
       if (full_path != "")
