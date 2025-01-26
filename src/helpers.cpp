@@ -85,20 +85,37 @@ std::string parse_input_with_autocomplete(std::string &input, Trie &trie, bool f
 
     return input;
 }
-std::vector<std::string> split(const std::string &s, char delimiter)
-{
+std::vector<std::string> split(const std::string &s, char delimiter) {
     std::vector<std::string> tokens;
     std::string token;
-    std::stringstream ss(s);
+    bool escape = false; 
 
-    while (std::getline(ss, token, delimiter))
-    {
+    for (size_t i = 0; i < s.size(); ++i) {
+        char c = s[i];
+
+        if (escape) {
+            // Add the current character to the token, even if it's a delimiter.
+            token += c;
+            escape = false; 
+        } else if (c == '\\') {
+            escape = true;
+        } else if (c == delimiter) {
+            tokens.push_back(token);
+            token.clear();
+        } else {
+            
+            token += c;
+        }
+    }
+
+    
+    if (!token.empty()) {
         tokens.push_back(token);
     }
 
     return tokens;
+}
 
- }
  
  std::optional<struct stat> is_path_exist(std::string &path)
 {
