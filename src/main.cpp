@@ -12,6 +12,10 @@
 #include <algorithm>
 #include "helpers.h"
 #include "globals.h"
+#include <cstdlib>
+#include <sys/stat.h>
+#include <stdio.h>
+#include <optional>
 
 void handle_cat(const std::string &argument)
 {
@@ -105,45 +109,34 @@ void handle_cat(const std::string &argument)
 
 void handle_ls(std::string &argument)
 {
-  // Remove flags like '-1' and trim whitespace
-  if (argument[0] == '-')
-  {
-    size_t pos = 0;
-    while (pos < argument.size() && (argument[pos] == '-' || std::isspace(argument[pos])))
-    {
-      pos++;
-    }
-    if (pos < argument.size() && std::isdigit(argument[pos]))
-    {
-      while (pos < argument.size() && std::isdigit(argument[pos]))
-      {
-        pos++;
-      }
-    }
-    argument = argument.substr(pos);
-  }
 
-  argument = trim(argument); // Ensure trim() removes whitespace properly
+  argument = trim(argument); 
 
-  // Resolve the directory path
   std::string target_dir = argument.empty() ? WORKING_DIRECTORY : argument;
 
-  // List directory entries (sorted)
-  if (is_path_exist(target_dir) && std::filesystem::is_directory(target_dir))
+  std::optional<struct stat> path_state = is_path_exist(target_dir);
+  if (path_state != std::nullopt && S_ISDIR(path_state->st_mode))
   {
     std::vector<std::string> entries;
     for (const auto &entry : std::filesystem::directory_iterator(target_dir))
     {
-      entries.push_back(entry.path().filename().string());
+      std::string item = entry.path().filename().string();
+
+      if(std::filesystem::is_directory(entry))
+      {
+        item+='/';
+      }
+      entries.push_back(item);
     }
-    std::sort(entries.begin(), entries.end()); // Alphabetical sort
+    std::sort(entries.begin(), entries.end()); 
 
     for (const auto &entry : entries)
     {
-      std::cout << entry << std::endl; // Ensure each entry is on a new line
-    }
+      std::cout << entry << std::endl; 
+      }
+    
   }
-  else if (is_path_exist(target_dir) && std::filesystem::is_regular_file(target_dir))
+  else if (path_state != std::nullopt && S_ISREG(path_state->st_mode))
   {
     std::cout << target_dir << std::endl;
   }
@@ -152,6 +145,7 @@ void handle_ls(std::string &argument)
     std::cerr << "ls: " << argument << ": No such file or directory" << std::endl;
   }
 }
+
 
 void handle_echo(std::string &argument)
 {
