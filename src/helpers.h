@@ -9,12 +9,19 @@
 #include <sstream>
 #include <stack>
 #include <algorithm>
+#include <termios.h>
+#include <unistd.h>
+#include <cstdlib>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <optional>
+
 
 std::string parse_input_with_autocomplete(std::string &input, Trie &trie, bool first_time = true);
 void autocomplete(std::string &input, Trie &trie);
 void add_executables_to_trie(Trie &trie);
 std::vector<std::string> split(const std::string &s, char delimiter);
-bool is_path_exist(const std::string &path);
+std::optional<struct stat>is_path_exist(std::string &path);
 std::pair<std::string, std::string> fetch_command_and_argument(const std::string &input);
 std::vector<std::string> handle_quoting(std::string argument);
 std::vector<std::string> handle_single_qoutes(const std::string &argument);
