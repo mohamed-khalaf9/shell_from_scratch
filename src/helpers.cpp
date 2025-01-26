@@ -534,7 +534,8 @@ bool handle_relative_path(std::vector<std::string> &path_tokens)
     }
 
     // After handling all tokens, ensure the path is valid
-    return is_path_exist(WORKING_DIRECTORY);
+    std::optional<struct stat> path_stat = is_path_exist(WORKING_DIRECTORY);
+    return path_stat != std::nullopt;
 }
 
 std::string remove_last_token_from_working_directory(const std::string &workingDirectory)
@@ -580,10 +581,16 @@ std::string remove_extra_spaces(const std::string &str)
 bool change_directory(const std::string &path)
 {
     std::string trimmed_path = trim(path);
+    if(trimmed_path.empty())
+    {
+        return false;
+    }
     if (trimmed_path == "~")
     {
         WORKING_DIRECTORY = std::getenv("HOME");
+        if(chdir(WORKING_DIRECTORY.c_str())==0)
         return true;
+        else return false;
     }
     std::vector<std::string> path_tokens = split(trimmed_path, '/');
 
@@ -596,7 +603,9 @@ bool change_directory(const std::string &path)
         // handel relative path
         if (handle_relative_path(path_tokens))
         {
+            if(chdir(WORKING_DIRECTORY.c_str())==0)
             return true;
+            else return false;
         }
         else
         {
@@ -605,11 +614,19 @@ bool change_directory(const std::string &path)
     }
     else
     {
-        if (is_path_exist(trimmed_path))
+        std::optional<struct stat> path_stat = is_path_exist(trimmed_path);
+        if (path_stat != std::nullopt && S_ISDIR(path_stat->st_mode))
         {
 
-            WORKING_DIRECTORY = path;
-            return true;
+            WORKING_DIRECTORY = trimmed_path;
+            if(chdir(WORKING_DIRECTORY.c_str())==0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         else
             return false;
