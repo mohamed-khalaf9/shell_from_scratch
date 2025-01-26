@@ -1,9 +1,7 @@
 #include "helpers.h"
 #include "globals.h"
-#include <termios.h>
-#include <unistd.h>
-#include <cstdlib>
-#include <sys/stat.h>
+
+
 
 char getch() {
     struct termios oldt, newt;
@@ -99,10 +97,15 @@ std::vector<std::string> split(const std::string &s, char delimiter)
     }
 
     return tokens;
-}
-bool is_path_exist(const std::string &path)
+
+ }
+ 
+ std::optional<struct stat> is_path_exist(std::string &path)
 {
-    return std::filesystem::exists(path);
+    struct stat buffer;
+    if(stat(path.c_str(), &buffer) == 0)
+    return buffer;
+    else return std::nullopt;
 }
 void add_executables_to_trie(Trie &trie)
 {
