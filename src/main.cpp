@@ -216,6 +216,21 @@ void handle_pwd()
 void handle_cd(std::string &argument)
 {
   argument = trim(argument);
+  //handle quoted paths - for now only handling arugments that start with single or double quotes
+  if(argument[0] == '\'' || argument[0] == '\"')
+  {
+    std::vector<std::string> tokens = handle_quoting(argument);
+    std::string tmp="";
+    for(const auto &token : tokens)
+    {
+      tmp+=token;
+    }
+    argument = tmp;
+  }
+  else if(argument.find('\\') != std::string::npos)
+  {
+    argument = handle_non_quoted_backslash(argument);
+  }
   if (!argument.empty() && change_directory(argument))
   {
     return;
