@@ -2,7 +2,8 @@
 #include "globals.h"
 #include <termios.h>
 #include <unistd.h>
-
+#include <cstdlib>
+#include <sys/stat.h>
 
 char getch() {
     struct termios oldt, newt;
@@ -472,11 +473,29 @@ std::string is_executable_file_exists_in_path(const std::string &file_name)
 
         for (const auto &dir : dirs)
         {
-            std::string full_path = dir + "/" + file_name;
-            if (std::filesystem::exists(full_path))
+            try{
+            for(const auto &file : std::filesystem::directory_iterator(dir))
             {
-                return full_path;
+                if(file.path().filename().string()== file_name)
+                {
+                    struct stat file_stat;
+                    if(stat(file.path().c_str(), &file_stat)==0)
+                    {
+                        if(file_stat.st_mode & S_IXUSR)
+                        {
+                            return file.path().string();
+                        }
+                    }
+                }
+
+
             }
+            }
+            catch(const std::filesystem::filesystem_error &e)
+            {
+                std::cout<<e.what()<<std::endl;
+            }
+            
         }
         return "";
     }
