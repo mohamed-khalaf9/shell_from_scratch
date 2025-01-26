@@ -19,7 +19,7 @@
 
 void handle_cat(const std::string &argument)
 {
-  bool append_new_line = false;
+  
   if (!argument.empty())
   {
     std::vector<std::string> file_paths;
@@ -27,17 +27,14 @@ void handle_cat(const std::string &argument)
     {
       file_paths = handle_quoting(argument);
 
-      if (file_paths.size() == 1)
-      {
-        append_new_line = true;
-      }
-      for (const auto &path : file_paths)
+      for (auto &path : file_paths)
       {
         if (path == " " || path == "")
         {
           continue;
         }
-        if (path != " " && path != "" && is_path_exist(path))
+        std::optional<struct stat> path_stat = is_path_exist(path);
+        if (path != " " && path != "" && path_stat != std::nullopt && S_ISREG(path_stat->st_mode))
         {
 
           std::ifstream file(path);
@@ -47,35 +44,29 @@ void handle_cat(const std::string &argument)
             std::string line;
             while (std::getline(file, line))
             {
-              std::cout << line;
-              if (append_new_line)
-              {
-                std::cout << std::endl;
-              }
+              std::cout << line<<std::endl;
             }
             file.close();
           }
         }
         else
         {
-          std::cerr << "cat: " << path << ": No such file or directory\n";
+          std::cerr << "cat: " << path << ": No such file\n";
         }
       }
     }
     else
     {
+
       file_paths = split(argument, ' ');
-      if (file_paths.size() == 1)
-      {
-        append_new_line = true;
-      }
-      for (const auto &path : file_paths)
+      for (auto &path : file_paths)
       {
         if (path == " " || path == "")
         {
           continue;
         }
-        if (path != " " && path != "" && is_path_exist(path))
+        std::optional<struct stat> path_stat = is_path_exist(path);
+        if (path != " " && path != "" && path_stat != std::nullopt && S_ISREG(path_stat->st_mode))
         {
 
           std::ifstream file(path);
@@ -85,11 +76,7 @@ void handle_cat(const std::string &argument)
             std::string line;
             while (std::getline(file, line))
             {
-              std::cout << line;
-              if (append_new_line)
-              {
-                std::cout << std::endl;
-              }
+              std::cout<<line<<std::endl;
             }
             file.close();
           }
@@ -100,11 +87,9 @@ void handle_cat(const std::string &argument)
         }
       }
     }
+    std::cout<<std::endl;
   }
-  if (!append_new_line)
-  {
-    std::cout << std::endl;
-  }
+ 
 }
 
 void handle_ls(std::string &argument)
