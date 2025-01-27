@@ -45,7 +45,7 @@ A lightweight, feature-rich custom shell built for **Linux (Ubuntu)** that suppo
     
   ## Technical Details
    - **Programming languages:** C++
-   - **Source Code Documentation:**
+   - **Source Code Documentation:** [Documentation File](./shell-source-code-documentation.md)
    - **Trie Data Structure:** The trie is used to store all commands and executable file names for fast prefix-based lookups.
 
   ## Installation
@@ -57,7 +57,7 @@ A lightweight, feature-rich custom shell built for **Linux (Ubuntu)** that suppo
        sudo apt install g++
        ```  
   2. **Steps:**
-     - Clone the repository: ```git clone```
+     - Clone the repository: ```git clone https://github.com/mohamed-khalaf9/shell_from_scratch.git```
      - Navigate to the project directory: ```cd <project_dir>```
      - Compile the shell: ```g++ -o shell src/*.cpp```
      - Run the shell: ```./shell```
