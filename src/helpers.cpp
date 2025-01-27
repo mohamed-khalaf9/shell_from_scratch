@@ -129,18 +129,24 @@ void add_executables_to_trie(Trie &trie)
     const char *path = std::getenv("PATH");
     if (path)
     {
-        std::vector<std::string> dirs = split(path, ';');
-        for (const auto &dir : dirs)
+        std::vector<std::string> dirs = split(path, ':');
+        for (auto &dir : dirs)
         {
-            if (dir.empty() || !is_path_exist(dir))
+            std::optional<struct stat> path_stat = is_path_exist(dir);
+            if (dir.empty() || path_stat == std::nullopt || !S_ISDIR(path_stat->st_mode))
             {
                 continue;
             }
             for (const auto &entry : std::filesystem::directory_iterator(dir))
             {
-                if (entry.is_regular_file() && entry.path().filename().string() != "shell")
-                {
-                    trie.insert(entry.path().filename().string());
+                 if (entry.is_regular_file()) {
+                    auto perms = entry.status().permissions();
+                    if ((perms & std::filesystem::perms::owner_exec) != std::filesystem::perms::none) {
+                        std::string filename = entry.path().filename().string();
+                        if (filename != "shell") {
+                            trie.insert(filename);
+                        }
+                    }
                 }
             }
         }
