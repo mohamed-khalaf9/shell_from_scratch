@@ -153,7 +153,7 @@ $
 > You can test the auto-completion feature by typing some characters and pressing TAB. Additionally, you can explore the shell and test more commands in detail, or find bugs :).
 
 ## Contributing
-  You can contribute with: **Code Refactoring - Bug fixing - New Features - Code Documentation**
+  You can contribute with: **Code Refactoring - Bug fixing - New Features - Code Documentation**  
 **Steps:**
 1. Fork the repository and clone it locally.  
 2. Create a branch for your feature or bug fix.  
