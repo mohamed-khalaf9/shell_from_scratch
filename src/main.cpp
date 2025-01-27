@@ -16,6 +16,7 @@
 #include <sys/stat.h>
 #include <stdio.h>
 #include <optional>
+#include <sys/wait.h>
 
 void handle_cat(const std::string &argument)
 {
@@ -256,7 +257,9 @@ void handle_cd(std::string &argument)
 
 void execute_Programm(std::string &command, std::string &argument)
 {
-  // exectue programm
+  command = trim(command);
+  argument = trim(argument);
+  
   std::string programm_name;
 
   if (command[0] == '\'' || command[0] == '\"')
@@ -278,19 +281,58 @@ void execute_Programm(std::string &command, std::string &argument)
 
   std::string programm_argument = argument;
 
-  // check if programm is an executable file
+  // check if programm is an executable file in path
   std::string full_path = is_executable_file_exists_in_path(programm_name);
   if (full_path != "")
   {
 
-    std::string command = programm_name + " " + programm_argument;
-    system(command.c_str());
+    std::vector<std::string> args = {programm_name,programm_argument};
+    std::vector<char *> argv;
+
+    for(const auto &arg : args)
+    {
+      argv.push_back(const_cast<char *>(arg.c_str()));
+
+    }
+    argv.push_back(nullptr);
+
+    pid_t pid = fork();
+    if(pid == -1)
+    {
+      std::cerr<<"fork failed\n";
+    }
+    else if(pid == 0)
+    {
+      execv(full_path.c_str(),argv.data());
+      std::cerr<<"execv failed\n";
+      exit(1);
+    }
+    else
+    {
+      int status;
+      if(waitpid(pid,&status,0) == -1)
+      {
+        std::cerr << "Error waiting for child process: " <<"\n";
+      }
+      else
+      {
+        if(WIFEXITED(status))
+        {
+          std::cout<<"Programm exited with status: "<<WEXITSTATUS(status)<<std::endl;
+        }
+        else
+        {
+          std::cerr<<"Programm terminated abnormally\n";
+        }
+
+    }
+
+    }
   }
-  else
-  {
-    std::cerr << programm_name << ": not found\n";
-  }
+  else{
+ std::cerr << programm_name << ": not found\n";}
 }
+
 
 void run()
 {
