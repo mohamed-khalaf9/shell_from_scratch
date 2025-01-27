@@ -65,27 +65,27 @@ A lightweight, feature-rich custom shell built for **Linux (Ubuntu)** that suppo
    ## Usage
    - **echo**
 ```
-     $ echo 'hello world'
-     hello world
-     $ echo "hello \$world "
-     hello $world 
-     $
+$ echo 'hello world'
+hello world
+$ echo "hello \$world "
+hello $world 
+$
 ```
     
    - **ls**
 ```
-    $ ls
-    globals.cpp
-    globals.h
-    helpers
-    helpers.cpp
-    helpers.h
-    main
-    main.cpp
-    trie.h
-    $ ls /home/mohamed-khalaf/test
-    shell_from_scratch/
-    $
+$ ls
+globals.cpp
+globals.h
+helpers
+helpers.cpp
+helpers.h
+main
+main.cpp
+trie.h
+$ ls /home/mohamed-khalaf/test
+shell_from_scratch/
+$
 ```
 - **pwd**
 ```
