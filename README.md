@@ -166,7 +166,7 @@ For questions or discussions, feel free to open an issue.
 
 
 ## License
-This project is licensed under the MIT License. You are free to use, modify, and distribute this software as long as the original license is included. See the [LICENSE](LICENSE) file for more details.
+This project is licensed under the MIT License. You are free to use, modify, and distribute this software as long as the original license is included. See the [LICENSE](./LICENSE) file for more details.
 
 ## Learning Outcomes
 
