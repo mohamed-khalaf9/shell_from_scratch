@@ -500,6 +500,11 @@ std::string is_executable_file_exists_in_path(const std::string &file_name)
         for (const auto &dir : dirs)
         {
             try{
+            std::filesystem::path dir_path = std::filesystem::absolute(dir);
+            if(!std::filesystem::exists(dir_path))
+            {
+                continue;
+            }
             for(const auto &file : std::filesystem::directory_iterator(dir))
             {
                 if(file.path().filename().string()== file_name)
