@@ -175,7 +175,7 @@ This project is licensed under the MIT License. You are free to use, modify, and
     - First-time practical exposure to Linux internals and shell environments.
 
 - **Operating Systems Knowledge**
-    - Strengthened my understanding of key OS concepts such as input/output redirection, process management, and file descriptors.
+    - Strengthened my understanding of key OS concepts such as output redirection, process management, and file descriptors.
 
 - **Problem-Solving and Debugging**
     - Tackled numerous bugs and edge cases, especially while implementing quoting, backslashes, and redirection.
