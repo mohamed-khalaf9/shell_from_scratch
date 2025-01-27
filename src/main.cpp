@@ -33,11 +33,11 @@ void handle_cat(const std::string &argument)
         {
           continue;
         }
-        std::optional<struct stat> path_stat = is_path_exist(path);
-        if (path != " " && path != "" && path_stat != std::nullopt && S_ISREG(path_stat->st_mode))
+        std::filesystem::path full_path = std::filesystem::absolute(path);
+        if (std::filesystem::exists(full_path)&&std::filesystem::is_regular_file(path))
         {
 
-          std::ifstream file(path);
+          std::ifstream file(full_path);
 
           if (file.is_open())
           {
@@ -65,11 +65,11 @@ void handle_cat(const std::string &argument)
         {
           continue;
         }
-        std::optional<struct stat> path_stat = is_path_exist(path);
-        if (path != " " && path != "" && path_stat != std::nullopt && S_ISREG(path_stat->st_mode))
+        std::filesystem::path full_path = std::filesystem::absolute(path);
+        if (path != " " && path != "" && std::filesystem::exists(full_path) && std::filesystem::is_regular_file(path))
         {
 
-          std::ifstream file(path);
+          std::ifstream file(full_path);
 
           if (file.is_open())
           {
